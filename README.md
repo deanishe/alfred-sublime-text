@@ -2,7 +2,7 @@
 
 Filter and open your Sublime Text (2 and 3) project files.
 
-![](demo.gif "")
+![](https://raw.githubusercontent.com/deanishe/alfred-sublime-text/master/demo.gif "")
 
 ## Installation ##
 
