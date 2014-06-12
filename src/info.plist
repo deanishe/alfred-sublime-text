@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>net.deanishe.alfred-sublime-text-projects</string>
+	<key>connections</key>
+	<dict>
+		<key>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>1F8CC3FB-B3D4-4FCB-B929-EB7E6E186DCD</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>E934D964-B0B8-4A32-8DF3-4692A8F26E97</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Reveal in Finder</string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Dean Jackson</string>
+	<key>description</key>
+	<string>Find and open Sublime Text projects</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Sublime Text Projects</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict/>
+			<key>type</key>
+			<string>alfred.workflow.action.openfile</string>
+			<key>uid</key>
+			<string>1F8CC3FB-B3D4-4FCB-B929-EB7E6E186DCD</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>keyword</key>
+				<string>.st</string>
+				<key>runningsubtext</key>
+				<string>Finding projects…</string>
+				<key>script</key>
+				<string>/usr/bin/python sublime.py "{query}"</string>
+				<key>subtext</key>
+				<string>Search and Open Sublime Text Projects</string>
+				<key>title</key>
+				<string>Sublime Text Projects</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>alfred.workflow.action.revealfile</string>
+			<key>uid</key>
+			<string>E934D964-B0B8-4A32-8DF3-4692A8F26E97</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>1F8CC3FB-B3D4-4FCB-B929-EB7E6E186DCD</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>E934D964-B0B8-4A32-8DF3-4692A8F26E97</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>
