@@ -4,6 +4,10 @@ Filter and open your Sublime Text (2 and 3) project files.
 
 ![](demo.gif "")
 
+## Installation ##
+
+Download the workflow from [GitHub](https://github.com/deanishe/alfred-sublime-text/releases/latest) or [Packal](http://www.packal.org/workflow/sublime-text-projects).
+
 ## Usage ##
 
 Enter the keyword `.st` (the default—you can change it) in Alfred and an optional query.
