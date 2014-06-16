@@ -1,6 +1,6 @@
 # Sublime Text Projects Alfred Workflow #
 
-Filter and open your Sublime Text (2 and 3) project files.
+View, filter and open your Sublime Text (2 and 3) project files.
 
 ![](https://raw.githubusercontent.com/deanishe/alfred-sublime-text/master/demo.gif "")
 
