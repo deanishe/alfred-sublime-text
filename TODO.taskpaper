@@ -1,0 +1,8 @@
+Updating:
+	- Re-jigger caching/filtering behaviour?
+		Currently, `locate` results are purged before caching. This means that files		on disks currently not connected will disappear for up to a week. Is it better to store all the results and filter them on retrieval (in `sublime.py`) or will `mdfind` likely pick them up?
+		- Is an option to force reload from `locate` a viable alternative?
+			Probably!
+Interface:
+	- Offer a way to edit `settings.json` via Alfred?
+		Lots of work, and anyone using Sublime Text should, nay must, be able to handle editing a JSON file. Not much of an ST user if you can't…
