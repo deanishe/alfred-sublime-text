@@ -10,9 +10,13 @@ Download the workflow from [GitHub](https://github.com/deanishe/alfred-sublime-t
 
 ## Usage ##
 
-Enter the keyword `.st` (the default—you can change it) in Alfred and an optional query.
+- `.st [<query>]` — List/filter your `.sublime-project` files
+	+ `↩` — Open result in Sublime Text
+	+ `⌘+↩` — Reveal file in Finder
+- `.stconfig` — Show the current settings
+- `.sthelp` — View the included help file
 
-Hit `↩` on a result to open it in Sublime Text or `⌘+↩` to reveal in Finder.
+**Note**: You can currently only alter the settings by editing the `settings.json` file by hand. Hit `↩` on the **Edit Configuration** item to open it in your default JSON editor.
 
 ## Licensing, thanks ##
 
