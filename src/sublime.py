@@ -42,6 +42,11 @@ DEFAULT_SETTINGS = {
 log = None
 
 
+def do_edit_config(wf):
+    """Open `settings.json` in default editor"""
+    subprocess.call(['open', wf.settings_path])
+
+
 def do_update(wf):
     """Delete cached results to force update on next call"""
     # Force reloading of results from `locate`
@@ -61,7 +66,7 @@ def do_config(wf):
     wf.add_item('Edit Configuration',
                 'Open `settings.json` in your default editor.',
                 valid=True,
-                arg=wf.settings_path,
+                arg='edit',
                 icon=ICON_SETTINGS)
 
     if not os.path.exists(LOCATE_DB):
@@ -133,6 +138,8 @@ def main(wf):
             return do_help(wf)
         elif args.action == 'update':
             return do_update(wf)
+        elif args.action == 'edit':
+            return do_edit_config(wf)
         else:
             raise ValueError('Unknown action : {}'.format(args.action))
 
