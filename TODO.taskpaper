@@ -1,3 +1,6 @@
+Bugs:
+	- `mdfind` finds everything that matches ".sublime-project", not only *.sublime-project files.
+		Ensure all results end with '.sublime-project'.
 Updating:
 	- Re-jigger caching/filtering behaviour?
 		Currently, `locate` results are purged before caching. This means that files		on disks currently not connected will disappear for up to a week. Is it better to store all the results and filter them on retrieval (in `sublime.py`) or will `mdfind` likely pick them up?

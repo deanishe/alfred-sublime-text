@@ -27,7 +27,7 @@ from __future__ import print_function, unicode_literals
 import sys
 import os
 import subprocess
-from time import time
+from time import sleep, time
 from fnmatch import fnmatch
 
 from workflow import Workflow
@@ -86,33 +86,35 @@ def main(wf):
         proc = procs.pop(0)
         if proc.poll() is None:
             procs.append(proc)
+            sleep(0.05)
             continue
         output = proc.communicate()[0]
-        paths.update([s.strip() for s in
+        paths.update([os.path.abspath(s.strip()) for s in
                       decode(output).split('\n') if s.strip()])
 
     projects = []
     exclude_patterns = wf.settings.get('excludes', [])
-    for path in paths:
+    j = len(paths)
+    for i, path in enumerate(sorted(paths)):
         # Exclude paths that don't exist. This is important, as `locate`
         # returns paths that may have long since been deleted or are on
         # drives that are currently not connected
         if not os.path.exists(path):
             continue
-        valid = True
+
         # Exclude results based on globbing patterns
         for pat in exclude_patterns:
             if fnmatch(path, pat):
                 log.debug('Excluded [{}] {}'.format(pat, path))
-                valid = False
                 break
-        if valid:
+        else:  # Path is valid
+            log.debug('[%3d/%3d] %r', i+1, j, path)
             projects.append(path)
 
     # Save data to cache
     wf.cache_data('projects', sorted(projects))
 
-    log.debug('{} projects found in {:0.2f} seconds'.format(
+    log.debug('{} projects found in {:0.2f} seconds.'.format(
               len(paths), time() - start))
 
 if __name__ == '__main__':

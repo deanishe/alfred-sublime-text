@@ -22,7 +22,10 @@ from workflow import (Workflow,
                       ICON_WARNING, ICON_INFO, ICON_SETTINGS, ICON_SYNC)
 from workflow.background import run_in_background, is_running
 
-VERSION = '2.0'
+# Auto-update URL
+UPDATE_SETTINGS = {
+    'github_slug': 'deanishe/alfred-sublime-text'
+}
 
 # Location of `locate` database
 LOCATE_DB = '/var/db/locate.database'
@@ -148,6 +151,13 @@ def main(wf):
         for key in DEFAULT_SETTINGS:
             wf.settings[key] = DEFAULT_SETTINGS[key]
 
+    # Show if update is available
+    if wf.update_available:
+        wf.add_item('Newer version available',
+                    'Action this item to install the update.',
+                    autocomplete='workflow:update',
+                    icon=ICON_SYNC)
+
     # Load cached data if it exists. If it's out-of-date, we'll take
     # care of that directly
     projects = wf.cached_data('projects', None, max_age=0)
@@ -193,6 +203,6 @@ def main(wf):
 
 
 if __name__ == '__main__':
-    wf = Workflow()
+    wf = Workflow(update_settings=UPDATE_SETTINGS)
     log = wf.logger
     sys.exit(wf.run(main))
