@@ -2,11 +2,11 @@
 
 View, filter and open your Sublime Text (2 and 3) project files.
 
-![](https://raw.githubusercontent.com/deanishe/alfred-sublime-text/master/demo.gif "")
+![][demo]
 
 ## Installation ##
 
-Download the workflow from [GitHub](https://github.com/deanishe/alfred-sublime-text/releases/latest) or [Packal](http://www.packal.org/workflow/sublime-text-projects).
+Download the workflow from [GitHub][gh-releases] or [Packal][packal].
 
 ## Usage ##
 
@@ -20,6 +20,16 @@ Download the workflow from [GitHub](https://github.com/deanishe/alfred-sublime-t
 
 ## Licensing, thanks ##
 
-All the code is released under the [MIT Licence](http://opensource.org/licenses/MIT).
+All the code is released under the [MIT Licence][mit].
 
-The icons are by [dmatarazzo](https://github.com/dmatarazzo/Sublime-Text-2-Icon).
+The workflow is based on the [Alfred-Workflow library][alfred-workflow], also released under the [MIT Licence][mit].
+
+The icons are by [dmatarazzo][dmatarazzo].
+
+
+[alfred-workflow]: http://www.deanishe.net/alfred-workflow/
+[demo]: https://raw.githubusercontent.com/deanishe/alfred-sublime-text/master/demo.gif
+[gh-releases]: https://github.com/deanishe/alfred-sublime-text/releases/latest
+[packal]: http://www.packal.org/workflow/sublime-text-projects
+[mit]: http://opensource.org/licenses/MIT
+[dmatarazzo]: https://github.com/dmatarazzo/Sublime-Text-2-Icon
