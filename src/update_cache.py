@@ -46,6 +46,7 @@ def run_command(cmd):
 
 
 def main(wf):
+    """Run script."""
     start = time()
     procs = []
 
@@ -108,7 +109,7 @@ def main(wf):
                 log.debug('Excluded [{}] {}'.format(pat, path))
                 break
         else:  # Path is valid
-            log.debug('[%3d/%3d] %r', i+1, j, path)
+            log.debug('[%3d/%3d] %r', i + 1, j, path)
             projects.append(path)
 
     # Save data to cache
@@ -116,6 +117,7 @@ def main(wf):
 
     log.debug('{} projects found in {:0.2f} seconds.'.format(
               len(paths), time() - start))
+
 
 if __name__ == '__main__':
     wf = Workflow()
