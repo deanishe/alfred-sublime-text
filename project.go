@@ -21,6 +21,21 @@ type Project struct {
 	Folders []string
 }
 
+// Name returns the name of the project (the filename w/o extension).
+func (r Project) Name() string {
+
+	if r.Path == "" {
+		return ""
+	}
+
+	s, x := filepath.Base(r.Path), filepath.Ext(r.Path)
+	if x == "" || x == "." {
+		return s
+	}
+
+	return s[0 : len(s)-len(x)]
+}
+
 type sublimeProject struct {
 	Folders []sublimeFolder `json:"folders"`
 }

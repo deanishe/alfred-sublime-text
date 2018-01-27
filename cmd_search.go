@@ -19,7 +19,7 @@ import (
 
 func runSearch() {
 
-	var res []ScanResult
+	var projs []Project
 
 	log.Printf(`searching for "%s" ...`, query)
 
@@ -35,16 +35,16 @@ func runSearch() {
 
 	// Load data
 	if wf.Cache.Exists(cacheKey) {
-		if err := wf.Cache.LoadJSON(cacheKey, &res); err != nil {
+		if err := wf.Cache.LoadJSON(cacheKey, &projs); err != nil {
 			wf.FatalError(err)
 		}
 	}
 
-	for _, r := range res {
-		wf.NewItem(r.Name()).
-			Subtitle(util.PrettyPath(r.Path)).
+	for _, proj := range projs {
+		wf.NewItem(proj.Name()).
+			Subtitle(util.PrettyPath(proj.Path)).
 			Valid(true).
-			Arg(r.Path).
+			Arg(proj.Path).
 			IsFile(true)
 	}
 

@@ -15,7 +15,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -49,11 +48,11 @@ func scanDue() bool {
 }
 
 // load all ST projects
-func scan() <-chan ScanResult {
+func scan() <-chan Project {
 
 	var (
-		ins []<-chan ScanResult
-		out = make(<-chan ScanResult)
+		ins []<-chan string
+		out = make(<-chan Project)
 	)
 
 	for name, scanner := range scanners {
@@ -72,51 +71,27 @@ func scan() <-chan ScanResult {
 	}
 
 	// real programs have middleware
-	out = filterExcludes(
-		filterNotExist(
-			filterDupes(
-				filterNotProject(
-					merge(ins...),
+	out = resultToProject(
+		filterExcludes(
+			filterNotExist(
+				filterDupes(
+					filterNotProject(
+						merge(ins...),
+					),
 				),
 			),
-		),
-		conf.Excludes)
+			conf.Excludes),
+	)
 
 	return out
 }
 
-// ScanResult is returned by a scanner.
-type ScanResult struct {
-	Dir     string // first directory listed in the .sublime-project file
-	Path    string // path of the .sublime-project file
-	Scanner string // name of scanner that found it
-}
-
-// Name returns the name of the project (the filename w/o extension).
-func (r ScanResult) Name() string {
-
-	if r.Path == "" {
-		return ""
-	}
-
-	s, x := filepath.Base(r.Path), filepath.Ext(r.Path)
-	if x == "" || x == "." {
-		return s
-	}
-
-	return s[0 : len(s)-len(x)]
-}
-
-func (r ScanResult) String() string {
-	return fmt.Sprintf("[%s] %s", r.Scanner, r.Path)
-}
-
 // Scanner finds Sublime Text project files.
 type Scanner interface {
-	Name() string                     // name of scanner
-	Due() bool                        // whether scanner wants to rescan
-	Ready() bool                      // whether scanner is runnable
-	Scan() (<-chan ScanResult, error) // scan for projects
+	Name() string                 // name of scanner
+	Due() bool                    // whether scanner wants to rescan
+	Ready() bool                  // whether scanner is runnable
+	Scan() (<-chan string, error) // scan for projects
 }
 
 // cacher is a base Scanner that can load and save cached data.
@@ -136,9 +111,9 @@ func (c *cacher) HasCache(maxAge time.Duration) bool {
 	return !wf.Cache.Expired(c.cacheName(), maxAge)
 }
 
-func (c *cacher) Loader() chan ScanResult {
+func (c *cacher) Loader() chan string {
 
-	var out = make(chan ScanResult)
+	var out = make(chan string)
 
 	go func() {
 
@@ -154,7 +129,7 @@ func (c *cacher) Loader() chan ScanResult {
 		scanner := bufio.NewScanner(buf)
 		var i int
 		for scanner.Scan() {
-			out <- ScanResult{Path: scanner.Text(), Scanner: c.Name()}
+			out <- scanner.Text()
 			i++
 		}
 		if err := scanner.Err(); err != nil {
@@ -166,25 +141,25 @@ func (c *cacher) Loader() chan ScanResult {
 
 	return out
 }
-func (c *cacher) Saver(in <-chan ScanResult, err error) (chan ScanResult, error) {
+func (c *cacher) Saver(in <-chan string, err error) (chan string, error) {
 
 	if err != nil {
 		return nil, err
 	}
 
 	var (
-		out   = make(chan ScanResult)
+		out   = make(chan string)
 		paths []string
 	)
 
 	go func() {
 		defer close(out)
 
-		for r := range in {
+		for p := range in {
 
-			out <- r
+			out <- p
 
-			paths = append(paths, r.Path)
+			paths = append(paths, p)
 		}
 
 		data := []byte(strings.Join(paths, "\n") + "\n")
@@ -216,7 +191,7 @@ func (s *mdfindScanner) Ready() bool {
 	return conf.MDFindInterval != 0
 }
 
-func (s *mdfindScanner) Scan() (<-chan ScanResult, error) {
+func (s *mdfindScanner) Scan() (<-chan string, error) {
 	if s.HasCache(conf.MDFindInterval) {
 		return s.Loader(), nil
 	}
@@ -247,7 +222,7 @@ func (s *locateScanner) Ready() bool {
 	}
 	return true
 }
-func (s *locateScanner) Scan() (<-chan ScanResult, error) {
+func (s *locateScanner) Scan() (<-chan string, error) {
 	if s.HasCache(conf.LocateInterval) {
 		return s.Loader(), nil
 	}
@@ -256,10 +231,10 @@ func (s *locateScanner) Scan() (<-chan ScanResult, error) {
 }
 
 // Run a command and write the lines of its output to a channel.
-func lineCommand(cmd *exec.Cmd, name string) (chan ScanResult, error) {
+func lineCommand(cmd *exec.Cmd, name string) (chan string, error) {
 
 	var (
-		out = make(chan ScanResult, 100)
+		out = make(chan string, 100)
 		err error
 	)
 
@@ -282,7 +257,7 @@ func lineCommand(cmd *exec.Cmd, name string) (chan ScanResult, error) {
 		// Read mdfind output and send it to channel
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
-			out <- ScanResult{Path: scanner.Text(), Scanner: name}
+			out <- scanner.Text()
 		}
 		if err := scanner.Err(); err != nil {
 			log.Printf("[%s] couldn't parse output: %v", name, err)
@@ -297,7 +272,7 @@ func lineCommand(cmd *exec.Cmd, name string) (chan ScanResult, error) {
 }
 
 // Filter files that match any of the glob patterns.
-func filterExcludes(in <-chan ScanResult, patterns []string) <-chan ScanResult {
+func filterExcludes(in <-chan string, patterns []string) <-chan string {
 	var globs []glob.Glob
 
 	// Compile patterns
@@ -309,9 +284,9 @@ func filterExcludes(in <-chan ScanResult, patterns []string) <-chan ScanResult {
 		}
 	}
 
-	return filterMatches(in, func(r ScanResult) bool {
+	return filterMatches(in, func(r string) bool {
 		for _, g := range globs {
-			if g.Match(r.Path) {
+			if g.Match(r) {
 				// log.Printf("[filter] ignored (%s): %s", g, r.String())
 				return true
 			}
@@ -320,16 +295,16 @@ func filterExcludes(in <-chan ScanResult, patterns []string) <-chan ScanResult {
 	})
 }
 
-func filterNotProject(in <-chan ScanResult) <-chan ScanResult {
-	return filterMatches(in, func(r ScanResult) bool {
-		return !strings.HasSuffix(r.Path, ".sublime-project")
+func filterNotProject(in <-chan string) <-chan string {
+	return filterMatches(in, func(r string) bool {
+		return !strings.HasSuffix(r, ".sublime-project")
 	})
 }
 
 // Filter files that don't exist.
-func filterNotExist(in <-chan ScanResult) <-chan ScanResult {
-	return filterMatches(in, func(r ScanResult) bool {
-		if _, err := os.Stat(r.Path); err != nil {
+func filterNotExist(in <-chan string) <-chan string {
+	return filterMatches(in, func(r string) bool {
+		if _, err := os.Stat(r); err != nil {
 			// log.Printf("[filter] doesn't exist: %s", p)
 			return true
 		}
@@ -338,35 +313,60 @@ func filterNotExist(in <-chan ScanResult) <-chan ScanResult {
 }
 
 // Filter files that have already passed through.
-func filterDupes(in <-chan ScanResult) <-chan ScanResult {
+func filterDupes(in <-chan string) <-chan string {
 
 	seen := map[string]bool{}
 
-	return filterMatches(in, func(r ScanResult) bool {
+	return filterMatches(in, func(r string) bool {
 
-		if seen[r.Path] {
+		if seen[r] {
 			// log.Printf("[filter] duplicate: %s", r.String())
 			return true
 		}
 
-		seen[r.Path] = true
+		seen[r] = true
 		return false
 	})
 }
 
 // passes through paths from in to out, ignoring those for which ignore(path) returns true.
-func filterMatches(in <-chan ScanResult, ignore func(r ScanResult) bool) <-chan ScanResult {
+func filterMatches(in <-chan string, ignore func(r string) bool) <-chan string {
 
-	var out = make(chan ScanResult)
+	var out = make(chan string)
 
 	go func() {
 		defer close(out)
 
-		for r := range in {
-			if ignore(r) {
+		for p := range in {
+			if ignore(p) {
 				continue
 			}
-			out <- r
+			out <- p
+		}
+	}()
+
+	return out
+}
+
+// Read .sublime-project files
+func resultToProject(in <-chan string) <-chan Project {
+
+	var out = make(chan Project)
+
+	go func() {
+		defer close(out)
+
+		for p := range in {
+
+			var proj = Project{}
+
+			proj, err := NewProject(p)
+			if err != nil {
+				log.Printf("[scan] couldn't read project file (%s): %v", p, err)
+				continue
+			}
+
+			out <- proj
 		}
 	}()
 
@@ -374,20 +374,20 @@ func filterMatches(in <-chan ScanResult, ignore func(r ScanResult) bool) <-chan 
 }
 
 // Combine the output of multiple channels into one.
-func merge(ins ...<-chan ScanResult) <-chan ScanResult {
+func merge(ins ...<-chan string) <-chan string {
 	var (
 		wg  sync.WaitGroup
-		out = make(chan ScanResult)
+		out = make(chan string)
 	)
 
 	wg.Add(len(ins))
 
 	for _, in := range ins {
 
-		go func(in <-chan ScanResult) {
+		go func(in <-chan string) {
 			defer wg.Done()
-			for r := range in {
-				out <- r
+			for p := range in {
+				out <- p
 			}
 		}(in)
 	}

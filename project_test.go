@@ -108,3 +108,28 @@ func TestResolvePath(t *testing.T) {
 		}
 	}
 }
+
+func TestProjectNames(t *testing.T) {
+
+	paths := []struct {
+		in, out string
+	}{
+		{"", ""},
+		{".", "."},
+		{"path/.", "."},
+		{"/", "/"},
+		{"~/Documents", "Documents"},
+		{"/Applications/Safari.app", "Safari"},
+		{"./Alfred Sublime.sublime-project", "Alfred Sublime"},
+		{"./path/to/something.txt", "something"},
+	}
+
+	for _, td := range paths {
+
+		proj := Project{Path: td.in}
+
+		if proj.Name() != td.out {
+			t.Errorf("Bad Name. Expected=%v, Got=%v", td.out, proj.Name())
+		}
+	}
+}
