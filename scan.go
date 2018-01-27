@@ -53,6 +53,7 @@ func scan() <-chan Project {
 	var (
 		ins []<-chan string
 		out = make(<-chan Project)
+		f   = &Filter{}
 	)
 
 	for name, scanner := range scanners {
@@ -71,17 +72,12 @@ func scan() <-chan Project {
 	}
 
 	// real programs have middleware
-	out = resultToProject(
-		filterExcludes(
-			filterNotExist(
-				filterDupes(
-					filterNotProject(
-						merge(ins...),
-					),
-				),
-			),
-			conf.Excludes),
-	)
+	f.Use(makeFilterExcludes(conf.Excludes))
+	f.Use(filterNotExist)
+	f.Use(filterDupes)
+	f.Use(filterNotProject)
+
+	out = resultToProject(f.Apply(merge(ins...)))
 
 	return out
 }
@@ -269,6 +265,12 @@ func lineCommand(cmd *exec.Cmd, name string) (chan string, error) {
 	}()
 
 	return out, err
+}
+
+func makeFilterExcludes(patterns []string) Filterer {
+	return func(in <-chan string) <-chan string {
+		return filterExcludes(in, patterns)
+	}
 }
 
 // Filter files that match any of the glob patterns.
