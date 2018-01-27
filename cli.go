@@ -3,7 +3,7 @@
 //
 // MIT Licence. See http://opensource.org/licenses/MIT
 //
-// Created on 2018-01-26
+// Created on 2018-01-27
 //
 
 package main
@@ -12,10 +12,45 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 
 	aw "github.com/deanishe/awgo"
 	"github.com/deanishe/awgo/util"
 )
+
+func runConfig() {
+	log.Printf(`filtering config "%s" ...`, query)
+}
+
+// Scan for projects and cache results
+func runScan() {
+	wf.TextErrors = true
+
+	var projs []Project
+
+	if force {
+		if conf.FindInterval != 0 {
+			conf.FindInterval = time.Nanosecond * 1
+		}
+		if conf.MDFindInterval != 0 {
+			conf.MDFindInterval = time.Nanosecond * 1
+		}
+		if conf.LocateInterval != 0 {
+			conf.LocateInterval = time.Nanosecond * 1
+		}
+	}
+
+	for proj := range scan() {
+		projs = append(projs, proj)
+		// log.Println(p)
+	}
+
+	log.Printf("%d project(s)", len(projs))
+
+	if err := wf.Cache.StoreJSON("projects.json", projs); err != nil {
+		wf.FatalError(err)
+	}
+}
 
 func runSearch() {
 
