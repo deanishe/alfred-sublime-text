@@ -377,63 +377,63 @@ exit $st</string>
 		<key>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</key>
 		<dict>
 			<key>xpos</key>
-			<integer>320</integer>
+			<integer>230</integer>
 			<key>ypos</key>
 			<integer>50</integer>
 		</dict>
 		<key>0F77272E-39A5-44AD-BB24-462F199B5590</key>
 		<dict>
 			<key>xpos</key>
-			<integer>720</integer>
+			<integer>630</integer>
 			<key>ypos</key>
 			<integer>330</integer>
 		</dict>
 		<key>1958F9DC-5B69-4F0C-B4DC-FCBAE0AB1EF8</key>
 		<dict>
 			<key>xpos</key>
-			<integer>520</integer>
+			<integer>430</integer>
 			<key>ypos</key>
 			<integer>330</integer>
 		</dict>
 		<key>31AB2913-1B83-4976-BE10-2526F543F5E3</key>
 		<dict>
 			<key>xpos</key>
-			<integer>520</integer>
+			<integer>430</integer>
 			<key>ypos</key>
 			<integer>470</integer>
 		</dict>
 		<key>36EE8FBB-FCCE-483E-AFCE-AC73906117C3</key>
 		<dict>
 			<key>xpos</key>
-			<integer>320</integer>
+			<integer>230</integer>
 			<key>ypos</key>
 			<integer>470</integer>
 		</dict>
 		<key>506077C9-6BF8-401D-B34D-ACAEAA975F30</key>
 		<dict>
 			<key>xpos</key>
-			<integer>520</integer>
+			<integer>430</integer>
 			<key>ypos</key>
 			<integer>50</integer>
 		</dict>
 		<key>7D52E522-509F-4E58-8CB7-B705389C78CB</key>
 		<dict>
 			<key>xpos</key>
-			<integer>720</integer>
+			<integer>630</integer>
 			<key>ypos</key>
 			<integer>50</integer>
 		</dict>
 		<key>9981F708-6C83-44CD-BC06-B6C10A2B00F6</key>
 		<dict>
 			<key>xpos</key>
-			<integer>320</integer>
+			<integer>230</integer>
 			<key>ypos</key>
 			<integer>330</integer>
 		</dict>
 		<key>E934D964-B0B8-4A32-8DF3-4692A8F26E97</key>
 		<dict>
 			<key>xpos</key>
-			<integer>520</integer>
+			<integer>430</integer>
 			<key>ypos</key>
 			<integer>190</integer>
 		</dict>

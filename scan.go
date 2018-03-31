@@ -19,55 +19,111 @@ import (
 	"sync"
 	"time"
 
-	"github.com/deanishe/awgo/util"
 	"github.com/gobwas/glob"
 )
 
 var (
 	locateDBPath = "/var/db/locate.database"
 	scanners     = map[string]Scanner{
-		"mdfind": &mdfindScanner{&cacher{name: "mdfind"}},
-		"locate": &locateScanner{&cacher{name: "locate"}},
+		"find":   &findScanner{},
+		"mdfind": &mdfindScanner{},
+		"locate": &locateScanner{},
 	}
 )
 
-// return true if at least one scanner wants to scan
-func scanDue() bool {
+// Scanner finds Sublime Text project files.
+type Scanner interface {
+	Name() string                             // name of scanner
+	Scan(conf *config) (<-chan string, error) // scan for projects
+}
+
+// ScanManager loads and runs Scanners.
+type ScanManager struct {
+	conf      *config
+	Scanners  map[string]Scanner
+	intervals map[string]time.Duration
+}
+
+// NewScanManager initialises a ScanManager.
+func NewScanManager(conf *config) *ScanManager {
+	sm := &ScanManager{
+		conf:      conf,
+		Scanners:  map[string]Scanner{},
+		intervals: map[string]time.Duration{},
+	}
+
+	for name, sc := range scanners {
+		var d time.Duration
+		switch name {
+		case "mdfind":
+			d = conf.MDFindInterval
+		case "locate":
+			d = conf.LocateInterval
+		case "find":
+			d = conf.FindInterval
+		default:
+			log.Printf("[scan] unknown scanner: %s", name)
+			d = conf.FindInterval
+		}
+		sm.Scanners[name] = sc
+		sm.intervals[name] = d
+	}
+
+	return sm
+}
+
+// ScanDue returns true if one or more scanners needs updating.
+func (sm *ScanManager) ScanDue() bool {
 
 	if !wf.Cache.Exists(cacheKey) {
 		return true
 	}
 
-	for _, sc := range scanners {
-		if sc.Due() {
-			log.Printf("[%s] rescan due", sc.Name())
-			return true
-		}
+	if len(sm.dueScanners()) > 0 {
+		return true
 	}
+
 	return false
 }
 
-// load all ST projects
-func scan() <-chan Project {
+// Scan updates the cached lists of projects.
+func (sm *ScanManager) Scan() error {
 
 	var (
-		ins []<-chan string
-		out = make(<-chan Project)
-		f   = &Filter{}
+		due   = map[string]bool{}
+		ins   []<-chan string
+		out   <-chan Project
+		projs []Project
+		f     = &Filter{}
+		err   error
 	)
 
-	for name, scanner := range scanners {
+	for _, name := range sm.dueScanners() {
+		due[name] = true
+	}
 
-		if !scanner.Ready() {
-			log.Printf("[%s] inactive", scanner.Name())
+	for name := range sm.Scanners {
+
+		if !sm.IsActive(name) {
+			// Clear any cached results
+			if err := wf.Cache.Store(sm.cacheName(name), nil); err != nil {
+				log.Printf("[scan] error clearing cache: %s", err)
+			}
+			log.Printf("[%s] inactive", name)
 			continue
 		}
 
-		log.Printf("[%s] starting ...", name)
-		if c, err := scanner.Scan(); err == nil {
-			ins = append(ins, c)
+		if due[name] {
+			sc := sm.Scanners[name]
+			if c, err := sc.Scan(sm.conf); err == nil {
+				log.Printf("[%s] reloading ...", name)
+				ins = append(ins, cacheProjects(sm.cacheName(name), c))
+			} else {
+				log.Printf("[%s] error: %v", name, err)
+			}
 		} else {
-			log.Printf("[%s] error: %v", name, err)
+			log.Printf("[%s] loading from cache ...", name)
+			ins = append(ins, sm.scanFromCache(name))
 		}
 	}
 
@@ -79,151 +135,154 @@ func scan() <-chan Project {
 
 	out = resultToProject(f.Apply(merge(ins...)))
 
-	return out
-}
-
-// Scanner finds Sublime Text project files.
-type Scanner interface {
-	Name() string                 // name of scanner
-	Due() bool                    // whether scanner wants to rescan
-	Ready() bool                  // whether scanner is runnable
-	Scan() (<-chan string, error) // scan for projects
-}
-
-// cacher is a base Scanner that can load and save cached data.
-type cacher struct {
-	name      string
-	fromCache bool
-}
-
-func (c *cacher) Name() string { return c.name }
-
-func (c *cacher) cacheName() string {
-	return "projects-" + c.Name() + ".txt"
-}
-
-// HasCache returns true if cache is valid.
-func (c *cacher) HasCache(maxAge time.Duration) bool {
-	return !wf.Cache.Expired(c.cacheName(), maxAge)
-}
-
-func (c *cacher) Loader() chan string {
-
-	var out = make(chan string)
-
-	go func() {
-
-		defer close(out)
-
-		data, err := wf.Cache.Load(c.cacheName())
-		if err != nil {
-			log.Printf(`[cache] load error for "%s": %v`, c.Name(), err)
-			return
-		}
-
-		buf := bytes.NewBuffer(data)
-		scanner := bufio.NewScanner(buf)
-		var i int
-		for scanner.Scan() {
-			out <- scanner.Text()
-			i++
-		}
-		if err := scanner.Err(); err != nil {
-			log.Printf(`[cache] reading error for "%s": %v`, c.Name(), err)
-		} else {
-			log.Printf(`[cache] %d projects loaded for "%s"`, i, c.Name())
-		}
-	}()
-
-	return out
-}
-func (c *cacher) Saver(in <-chan string, err error) (chan string, error) {
-
-	if err != nil {
-		return nil, err
+	for proj := range out {
+		projs = append(projs, proj)
 	}
 
+	err = wf.Cache.StoreJSON(cacheKey, projs)
+
+	return err
+}
+
+// IsActive returns true if a scanner exists and is active.
+func (sm *ScanManager) IsActive(name string) bool {
+	_, ok := sm.Scanners[name]
+	if !ok {
+		return false
+	}
+	return sm.intervals[name] != 0
+}
+
+// IsDue returns true if a scanner is active and due.
+func (sm *ScanManager) IsDue(name string) bool {
+	if !sm.IsActive(name) {
+		return false
+	}
+
+	return wf.Cache.Expired(sm.cacheName(name), sm.intervals[name])
+}
+
+// load data from cache.
+func (sm *ScanManager) scanFromCache(name string) <-chan string {
+
 	var (
-		out   = make(chan string)
-		paths []string
+		key = sm.cacheName(name)
+		out = make(chan string)
 	)
 
 	go func() {
+
+		defer timed(time.Now(), fmt.Sprintf(`[cache] loaded "%s"`, name))
+
 		defer close(out)
 
-		for p := range in {
-
-			out <- p
-
-			paths = append(paths, p)
-		}
-
-		data := []byte(strings.Join(paths, "\n") + "\n")
-		if err := wf.Cache.Store(c.cacheName(), data); err != nil {
-			log.Printf(`[cache] save error for "%s": %v`, c.Name(), err)
+		if !wf.Cache.Exists(key) {
 			return
 		}
-		log.Printf(`[cache] %d projects saved for "%s"`, len(paths), c.Name())
+
+		data, err := wf.Cache.Load(key)
+		if err != nil {
+			log.Printf("[scan] error reading cache: %v", err)
+			return
+		}
+
+		scanner := bufio.NewScanner(bytes.NewReader(data))
+		for scanner.Scan() {
+			out <- scanner.Text()
+		}
+		if err := scanner.Err(); err != nil {
+			log.Printf("[scan] error reading cache: %v", err)
+		}
 	}()
 
-	return out, nil
+	return out
+}
+
+func (sm *ScanManager) dueScanners() []string {
+
+	var (
+		due   []string
+		force bool
+	)
+
+	if !wf.Cache.Exists(cacheKey) {
+		force = true
+	}
+
+	for name := range sm.Scanners {
+
+		if !sm.IsActive(name) {
+			continue
+		}
+
+		if force || sm.IsDue(name) {
+			due = append(due, name)
+		}
+	}
+
+	return due
+}
+
+func (sm *ScanManager) cacheName(name string) string {
+	return "projects-" + name + ".txt"
+}
+
+// Load loads cached Projects.
+func (sm *ScanManager) Load() ([]Project, error) {
+
+	var (
+		projs []Project
+		err   error
+	)
+
+	if wf.Cache.Exists(cacheKey) {
+		err = wf.Cache.LoadJSON(cacheKey, &projs)
+	}
+
+	return projs, err
 }
 
 // Find .sublime-project files with `mdfind`
-type mdfindScanner struct {
-	*cacher
-}
+type mdfindScanner struct{}
 
 func (s *mdfindScanner) Name() string { return "mdfind" }
-
-func (s *mdfindScanner) Due() bool {
-	if conf.MDFindInterval == 0 {
-		return false
-	}
-	return !s.HasCache(conf.MDFindInterval)
-}
-
-func (s *mdfindScanner) Ready() bool {
-	return conf.MDFindInterval != 0
-}
-
-func (s *mdfindScanner) Scan() (<-chan string, error) {
-	if s.HasCache(conf.MDFindInterval) {
-		return s.Loader(), nil
-	}
+func (s *mdfindScanner) Scan(conf *config) (<-chan string, error) {
 	cmd := exec.Command("/usr/bin/mdfind", "-name", ".sublime-project")
-	return s.Saver(lineCommand(cmd, s.Name()))
+	return lineCommand(cmd, s.Name())
 }
 
 // Find *.sublime-project files with `locate`
-type locateScanner struct {
-	*cacher
-}
+type locateScanner struct{}
 
 func (s *locateScanner) Name() string { return "locate" }
-
-func (s *locateScanner) Due() bool {
-	if conf.LocateInterval == 0 {
-		return false
-	}
-	return !s.HasCache(conf.LocateInterval)
-}
-
-func (s *locateScanner) Ready() bool {
-	if conf.LocateInterval == 0 {
-		return false
-	}
-	if !util.PathExists(locateDBPath) {
-		return false
-	}
-	return true
-}
-func (s *locateScanner) Scan() (<-chan string, error) {
-	if s.HasCache(conf.LocateInterval) {
-		return s.Loader(), nil
-	}
+func (s *locateScanner) Scan(conf *config) (<-chan string, error) {
 	cmd := exec.Command("/usr/bin/locate", "*.sublime-project")
-	return s.Saver(lineCommand(cmd, s.Name()))
+	return lineCommand(cmd, s.Name())
+}
+
+type findScanner struct{}
+
+func (s *findScanner) Name() string { return "find" }
+func (s *findScanner) Scan(conf *config) (<-chan string, error) {
+
+	var chs []<-chan string
+
+	for _, sp := range conf.SearchPaths {
+
+		argv := []string{sp.Path, "-maxdepth", fmt.Sprintf("%d", sp.Depth)}
+		argv = append(argv, "-type", "f", "-name", "*.sublime-project")
+
+		cmd := exec.Command("/usr/bin/find", argv...)
+
+		ch, err := lineCommand(cmd, fmt.Sprintf("[%s] %s", s.Name(), sp.Path))
+		if err != nil {
+			return nil, err
+		}
+
+		chs = append(chs, ch)
+	}
+
+	return merge(chs...), nil
 }
 
 // Run a command and write the lines of its output to a channel.
@@ -344,6 +403,32 @@ func filterMatches(in <-chan string, ignore func(r string) bool) <-chan string {
 				continue
 			}
 			out <- p
+		}
+	}()
+
+	return out
+}
+
+func cacheProjects(key string, in <-chan string) <-chan string {
+
+	projs := []string{}
+
+	var out = make(chan string)
+
+	go func() {
+
+		defer close(out)
+
+		for p := range in {
+			projs = append(projs, p)
+			out <- p
+		}
+
+		data := []byte(strings.Join(projs, "\n"))
+		if err := wf.Cache.Store(key, data); err != nil {
+			log.Printf("[cache] error storing %s: %v", key, err)
+		} else {
+			log.Printf("[cache] saved %d project(s) to %s", len(projs), key)
 		}
 	}()
 
