@@ -19,6 +19,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/deanishe/awgo/util"
 	"github.com/gobwas/glob"
 )
 
@@ -136,6 +137,7 @@ func (sm *ScanManager) Scan() error {
 	out = resultToProject(f.Apply(merge(ins...)))
 
 	for proj := range out {
+		log.Printf("[scan] project: %s (%s)", proj.Name(), util.PrettyPath(proj.Path))
 		projs = append(projs, proj)
 	}
 
