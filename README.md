@@ -42,7 +42,7 @@ Licensing, thanks
 
 All the code is released under the [MIT Licence][mit].
 
-The workflow is based on the [AwGo library][alfred-workflow], also released under the [MIT Licence][mit].
+The workflow is based on the [AwGo library][awgo], also released under the [MIT Licence][mit].
 
 The icons are based on [Font Awesome][awesome] and [Material Design Icons][matcom].
 
