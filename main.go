@@ -13,12 +13,14 @@ import (
 	"path/filepath"
 
 	aw "github.com/deanishe/awgo"
+	"github.com/deanishe/awgo/update"
 )
 
 const (
 	cacheKey        = "projects.json"
 	issueTrackerURL = "https://github.com/deanishe/alfred-sublime-text/issues"
 	forumThreadURL  = "https://www.alfredforum.com/topic/4510-find-and-open-sublime-text-projects/"
+	repo            = "deanishe/alfred-sublime-text"
 )
 
 var (
@@ -27,7 +29,10 @@ var (
 )
 
 func init() {
-	wf = aw.New()
+	wf = aw.New(
+		update.GitHub(repo),
+		aw.HelpURL(issueTrackerURL),
+	)
 	configFile = filepath.Join(wf.DataDir(), "sublime.toml")
 }
 
