@@ -9,10 +9,11 @@
 package main
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
+
+	json "github.com/yosuke-furukawa/json5/encoding/json5"
 )
 
 // Project is a Sublime Text project.
@@ -55,8 +56,7 @@ func NewProject(path string) (Project, error) {
 		err  error
 	)
 
-	data, err = ioutil.ReadFile(path)
-	if err != nil {
+	if data, err = ioutil.ReadFile(path); err != nil {
 		return proj, err
 	}
 
@@ -70,7 +70,6 @@ func NewProject(path string) (Project, error) {
 			}
 
 		}
-
 	}
 
 	return proj, err

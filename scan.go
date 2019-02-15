@@ -96,7 +96,6 @@ func (sm *ScanManager) Scan() error {
 		out   <-chan Project
 		projs []Project
 		f     = &Filter{}
-		err   error
 	)
 
 	for _, name := range sm.dueScanners() {
@@ -141,9 +140,9 @@ func (sm *ScanManager) Scan() error {
 		projs = append(projs, proj)
 	}
 
-	err = wf.Cache.StoreJSON(cacheKey, projs)
+	log.Printf("%d total project(s) found", len(projs))
 
-	return err
+	return wf.Cache.StoreJSON(cacheKey, projs)
 }
 
 // IsActive returns true if a scanner exists and is active.
@@ -174,7 +173,7 @@ func (sm *ScanManager) scanFromCache(name string) <-chan string {
 
 	go func() {
 
-		defer timed(time.Now(), fmt.Sprintf(`[cache] loaded "%s"`, name))
+		defer util.Timed(time.Now(), fmt.Sprintf(`[cache] loaded "%s"`, name))
 
 		defer close(out)
 
@@ -298,7 +297,7 @@ func lineCommand(cmd *exec.Cmd, name string) (chan string, error) {
 	go func() {
 
 		defer close(out)
-		defer timed(time.Now(), fmt.Sprintf("%s scan", name))
+		defer util.Timed(time.Now(), fmt.Sprintf("%s scan", name))
 
 		stdout, err := cmd.StdoutPipe()
 		if err != nil {
@@ -340,6 +339,7 @@ func filterExcludes(in <-chan string, patterns []string) <-chan string {
 
 	// Compile patterns
 	for _, s := range patterns {
+		s = expandPath(s)
 		if g, err := glob.Compile(s); err == nil {
 			globs = append(globs, g)
 		} else {
@@ -350,7 +350,7 @@ func filterExcludes(in <-chan string, patterns []string) <-chan string {
 	return filterMatches(in, func(r string) bool {
 		for _, g := range globs {
 			if g.Match(r) {
-				// log.Printf("[filter] ignored (%s): %s", g, r.String())
+				log.Printf("[filter] ignored (%s): %s", g, util.PrettyPath(r))
 				return true
 			}
 		}

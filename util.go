@@ -59,10 +59,9 @@ func reldepth(base, dir string) int {
 
 // Replace ~ in a path with the home directory.
 func expandPath(path string) string {
-	if !strings.HasPrefix(path, "~") {
-		return path
+	if strings.HasPrefix(path, "~") {
+		path = "${HOME}" + path[1:]
 	}
 
-	path = os.ExpandEnv("$HOME") + path[1:]
-	return filepath.Clean(path)
+	return os.ExpandEnv(path)
 }

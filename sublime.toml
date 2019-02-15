@@ -1,4 +1,3 @@
-
 # How many directories deep to search by default.
 # 0 = the path itself
 # 1 = immediate children of the path

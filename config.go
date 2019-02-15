@@ -16,6 +16,8 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/deanishe/awgo/util"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -36,24 +38,17 @@ const (
 	envFindInterval   = "INTERVAL_FIND"
 	envMDFindInterval = "INTERVAL_MDFIND"
 	envLocateInterval = "INTERVAL_LOCATE"
-)
 
-// environment variable
-type envVar string
-
-const defaultConfig = `
-# How many directories deep to search by default.
+	defaultConfig = `# How many directories deep to search by default.
 # 0 = the path itself
 # 1 = immediate children of the path
 # 2 = grandchildren of the path
 # etc.
 # default: 2
-#
 # depth = 2
 
 # How long to cache the list of projects for.
 # default: 5m
-#
 # cache-age = "5m"
 
 # Each search path is specified by a [[paths]] header and
@@ -71,6 +66,7 @@ const defaultConfig = `
 #  depth = 3
 
 `
+)
 
 type config struct {
 	FindInterval   time.Duration `toml:"-"`
@@ -96,16 +92,12 @@ type searchPath struct {
 	Depth    int      `toml:"depth"`
 }
 
-func timed(start time.Time, title string) {
-	log.Printf("%s \U000029D7 %s", time.Now().Sub(start), title)
-}
-
 // Copy default settings file to data directory if there is no
 // existing settings file.
 func initConfig() error {
-	if _, err := os.Stat(configFile); os.IsNotExist(err) {
-		if err := ioutil.WriteFile(configFile, []byte(defaultConfig), os.ModePerm); err != nil {
-			return err
+	if !util.PathExists(configFile) {
+		if err := ioutil.WriteFile(configFile, []byte(defaultConfig), 0600); err != nil {
+			return errors.Wrap(err, "write config")
 		}
 	}
 	return nil
@@ -114,7 +106,7 @@ func initConfig() error {
 // Load configuration file.
 func loadConfig(path string) (*config, error) {
 
-	defer timed(time.Now(), "load config")
+	defer util.Timed(time.Now(), "load config")
 
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
