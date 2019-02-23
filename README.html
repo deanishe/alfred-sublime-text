@@ -649,7 +649,7 @@ html,body,#wrapper{font-size:10pt!important}
 
 
 </head>
-<body class="normal">
+<body class="normal firstload">
   <div id="wrapper">
       <h1>Sublime Text Projects Alfred Workflow</h1>
 
@@ -683,19 +683,60 @@ html,body,#wrapper{font-size:10pt!important}
 </ul></li>
 </ul>
 
-<p><strong>Note</strong>: You must edit the configuration and add some directories to search before using the workflow, or it won&#8217;t do anything.</p>
+<h2>How it works</h2>
+
+<p>The workflow scans your system for <code>.sublime-project</code> files using <code>locate</code>, <code>mdfind</code> and (optionally) <code>find</code>. It then caches the list of projects for 10 minutes (by default).</p>
+
+<p>As the <code>locate</code> database isn&#8217;t enabled on most machines (and isn&#8217;t updated frequently in any case), and <code>mdfind</code> ignores hidden directories, there is an additional, optional <code>find</code>-based scanner to &#8220;fill the gaps&#8221;, which you must specifically configure (see below).</p>
 
 <h2>Configuration</h2>
 
-<p>The workflow is configured by editing the <code>sublime.toml</code> file in the workflow&#8217;s data directory. It will be created by the workflow on first run, and you can use <code>.stconfig &gt; Edit Config File</code> to open it in Sublime Text.</p>
+<p>Scan intervals are configured in the <a href="https://www.alfredapp.com/help/workflows/advanced/variables/#environment">workflow&#8217;s configuration sheet in Alfred Preferences</a>:</p>
 
-<p>The available options are documented in the settings file itself.</p>
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Variable</th>
+	<th style="text-align:left;">Usage</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>INTERVAL_FIND</code></td>
+	<td style="text-align:left;">How long to cache <code>find</code> search results for</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>INTERVAL_LOCATE</code></td>
+	<td style="text-align:left;">How long to cache <code>locate</code> search results for</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>INTERVAL_MDFIND</code></td>
+	<td style="text-align:left;">How long to cache <code>mdfind</code> search results for</td>
+</tr>
+</tbody>
+</table>
+
+<p>The values should be of the form <code>10m</code> or <code>2h</code>. Set to <code>0</code> to disable a particular scanner.</p>
+
+<p>The workflow should work &#8220;out of the box&#8221;, but if you have project files in directories that <code>mdfind</code> doesn&#8217;t see (hidden directories, network shares), you may have to explicitly add some search paths to the <code>sublime.toml</code> configuration file in the workflow&#8217;s data directory. The file is created on first run, and you can use <code>.stconfig &gt; Edit Config File</code> to open it in Sublime Text.</p>
+
+<p>These directories are searched with <code>find</code>.</p>
+
+<p>You can also add glob patterns to the <code>excludes</code> list in the settings file to ignore certain results. Excludes apply to all scanners.</p>
+
+<p>The options are documented in the settings file itself.</p>
 
 <h2>Licensing, thanks</h2>
 
 <p>All the code is released under the <a href="http://opensource.org/licenses/MIT">MIT Licence</a>.</p>
 
-<p>The workflow is based on the [AwGo library][alfred-workflow], also released under the <a href="http://opensource.org/licenses/MIT">MIT Licence</a>.</p>
+<p>The workflow is based on the <a href="https://github.com/deanishe/awgo">AwGo workflow library</a> and <a href="https://github.com/docopt/docopt.go">docopt</a>, both also released under the <a href="http://opensource.org/licenses/MIT">MIT Licence</a>.</p>
 
 <p>The icons are based on <a href="https://fontawesome.com">Font Awesome</a> and <a href="https://materialdesignicons.com/">Material Design Icons</a>.</p>
 <!-- ##END MARKED WRAPPER## -->
