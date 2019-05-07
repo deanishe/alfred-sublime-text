@@ -17,22 +17,21 @@ import (
 )
 
 const (
-	cacheKey        = "projects.json"
 	issueTrackerURL = "https://github.com/deanishe/alfred-sublime-text/issues"
 	forumThreadURL  = "https://www.alfredforum.com/topic/4510-find-and-open-sublime-text-projects/"
 	repo            = "deanishe/alfred-sublime-text"
 )
 
 var (
+	cacheKey      = "sublime-projects.json"
+	fileExtension = ".sublime-project"
+
 	configFile string
 	wf         *aw.Workflow
 )
 
 func init() {
-	wf = aw.New(
-		update.GitHub(repo),
-		aw.HelpURL(issueTrackerURL),
-	)
+	wf = aw.New(update.GitHub(repo), aw.HelpURL(issueTrackerURL))
 	configFile = filepath.Join(wf.DataDir(), "sublime.toml")
 }
 
@@ -56,6 +55,12 @@ func run() {
 	if conf, err = loadConfig(configFile); err != nil {
 		log.Printf("couldn't read config (%s): %v", configFile, err)
 		wf.Fatal("Couldn't read config. Check log file.")
+	}
+
+	// Naughtily switch globals to propagate VSCode mode
+	if conf.VSCode {
+		cacheKey = "vscode-projects.json"
+		fileExtension = ".code-workspace"
 	}
 
 	if opts.Search {

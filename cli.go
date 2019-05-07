@@ -18,7 +18,7 @@ import (
 
 	aw "github.com/deanishe/awgo"
 	"github.com/deanishe/awgo/util"
-	docopt "github.com/docopt/docopt.go"
+	docopt "github.com/docopt/docopt-go"
 )
 
 var (
@@ -48,8 +48,14 @@ Options:
 	// via `subl` because it correctly loads the workspace. Opening a
 	// project with "Sublime Text.app" doesn't.
 	sublPaths = []string{
-		"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl",
 		"/usr/local/bin/subl",
+		"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl",
+	}
+	// Candidate paths to `code` command-line program.
+	codePaths = []string{
+		"/usr/local/bin/code",
+		"/Applications/VSCodium.app/Contents/Resources/app/bin/code",
+		"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code",
 	}
 )
 
@@ -91,21 +97,33 @@ func parseArgs(argv []string) error {
 	return nil
 }
 
-// Open a project with `subl` or "Sublime Text.app"
+func commandForProject(path string) *exec.Cmd {
+	var (
+		app   = "Sublime Text"
+		progs = sublPaths
+	)
+	if conf.VSCode {
+		app = "Visual Studio Code"
+		progs = codePaths
+	}
+
+	for _, p := range progs {
+		if util.PathExists(p) {
+			return exec.Command(p, path)
+		}
+	}
+
+	return exec.Command("/usr/bin/open", "-a", app, path)
+}
+
+// Open a project file. CLI programs `subl` or `code` are preferred.
+// If they can't be found application "Sublime Text.app" or
+// "Visual Studio Code.app" is called instead.
 func runOpenProject() {
 	wf.Configure(aw.TextErrors(true))
 
 	log.Printf("opening project %q ...", opts.ProjectPath)
-
-	// Fallback if we can't find `subl`.
-	cmd := exec.Command("/usr/bin/open", "-a", "Sublime Text", opts.ProjectPath)
-
-	for _, path := range sublPaths {
-		if util.PathExists(path) {
-			cmd = exec.Command(path, opts.ProjectPath)
-			break
-		}
-	}
+	cmd := commandForProject(opts.ProjectPath)
 
 	if _, err := util.RunCmd(cmd); err != nil {
 		wf.Fatalf("exec command %#v: %v", cmd, err)
@@ -289,13 +307,18 @@ func runSearch() {
 
 		wf.Rerun(0.1)
 
-		wf.NewItem("Loading projects…").
+		wf.NewItem("Scanning projects…").
 			Subtitle("Results will refresh in a few seconds").
 			Valid(false).
 			Icon(ReloadIcon())
 
 		wf.SendFeedback()
 		return
+	}
+
+	icon := iconSublime
+	if conf.VSCode {
+		icon = iconVSCode
 	}
 
 	for _, proj := range projs {
@@ -306,6 +329,7 @@ func runSearch() {
 			Arg(proj.Path).
 			UID(proj.Path).
 			IsFile(true).
+			Icon(icon).
 			Var("action", "open-project").
 			Var("close", "true")
 

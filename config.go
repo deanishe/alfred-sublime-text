@@ -11,8 +11,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
-	"os"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -35,10 +33,6 @@ const (
 	// DefaultLocateInterval is how often to run locate
 	DefaultLocateInterval = time.Duration(24) * time.Hour
 
-	envFindInterval   = "INTERVAL_FIND"
-	envMDFindInterval = "INTERVAL_MDFIND"
-	envLocateInterval = "INTERVAL_LOCATE"
-
 	defaultConfig = `# How many directories deep to search by default.
 # 0 = the path itself
 # 1 = immediate children of the path
@@ -50,6 +44,14 @@ const (
 # How long to cache the list of projects for.
 # default: 5m
 # cache-age = "5m"
+
+# Glob patterns for locations to exclude from results.
+# excludes = [
+# 	"/Applications/*",
+# 	"**/.npm/*",
+# 	"/Volumes/Backup/**",
+# 	"**/vim/undo/**"
+# ]
 
 # Each search path is specified by a [[paths]] header and
 # requires a path value.
@@ -69,12 +71,16 @@ const (
 )
 
 type config struct {
+	// From workflow environment variables
 	FindInterval   time.Duration `toml:"-"`
 	MDFindInterval time.Duration `toml:"-"`
 	LocateInterval time.Duration `toml:"-"`
-	Excludes       []string      `toml:"excludes"`
-	Depth          int           `toml:"depth"`
-	SearchPaths    []*searchPath `toml:"paths"`
+	VSCode         bool          `toml:"-"`
+
+	// From config file
+	Excludes    []string      `toml:"excludes"`
+	Depth       int           `toml:"depth"`
+	SearchPaths []*searchPath `toml:"paths"`
 }
 
 func (c *config) String() string {
@@ -82,8 +88,9 @@ func (c *config) String() string {
 INTERVAL_FIND=%s
 INTERVAL_MDFIND=%s
 INTERVAL_LOCATE=%s
+VSCODE=%v
 depth=%d`, c.FindInterval, c.MDFindInterval,
-		c.LocateInterval, c.Depth)
+		c.LocateInterval, c.VSCode, c.Depth)
 }
 
 type searchPath struct {
@@ -125,9 +132,10 @@ func loadConfig(path string) (*config, error) {
 	}
 
 	// Environment variables
-	conf.FindInterval = getEnvDuration(envFindInterval, 0)
-	conf.MDFindInterval = getEnvDuration(envMDFindInterval, 0)
-	conf.LocateInterval = getEnvDuration(envLocateInterval, 0)
+	conf.FindInterval = wf.Config.GetDuration("INTERVAL_FIND", DefaultFindInterval)
+	conf.MDFindInterval = wf.Config.GetDuration("INTERVAL_MDFIND", DefaultMDFindInterval)
+	conf.LocateInterval = wf.Config.GetDuration("INTERVAL_LOCATE", DefaultLocateInterval)
+	conf.VSCode = wf.Config.GetBool("VSCODE", false)
 
 	// Update depths
 	if conf.Depth == 0 {
@@ -141,20 +149,4 @@ func loadConfig(path string) (*config, error) {
 	}
 
 	return conf, nil
-}
-
-func getEnvDuration(key string, fallback time.Duration) time.Duration {
-	s := os.Getenv(key)
-
-	log.Printf("[env] %s=%s", key, s)
-
-	if s == "" {
-		return fallback
-	}
-	d, err := time.ParseDuration(s)
-	if err != nil {
-		log.Printf(`[env] invalid duration (%s) for "%s": %v`, s, key, err)
-		return fallback
-	}
-	return d
 }

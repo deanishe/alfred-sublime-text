@@ -714,9 +714,11 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 		<string>12h</string>
 		<key>INTERVAL_MDFIND</key>
 		<string>10m</string>
+		<key>VSCODE</key>
+		<string>1</string>
 	</dict>
 	<key>version</key>
-	<string>3.0.2</string>
+	<string>3.1.0</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>

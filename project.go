@@ -45,7 +45,7 @@ type sublimeFolder struct {
 	Path string `json:"path"`
 }
 
-// NewProject reads a .sublime-project file.
+// NewProject reads a .sublime-project or .code-workspace file.
 func NewProject(path string) (Project, error) {
 
 	var (

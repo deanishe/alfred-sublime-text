@@ -24,7 +24,7 @@ func (f *Filter) Use(fn Filterer) {
 // Apply runs the filter on a channel.
 func (f *Filter) Apply(in <-chan string) <-chan string {
 
-	var out = make(<-chan string)
+	var out <-chan string
 
 	// Make stack of handlers
 	out = f.Funcs[len(f.Funcs)-1](in)

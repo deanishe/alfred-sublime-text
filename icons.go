@@ -12,19 +12,21 @@ import (
 
 // Workflow icons
 var (
-	iconDocs            = &aw.Icon{Value: "icons/docs.png"}
 	iconHelp            = &aw.Icon{Value: "icons/help.png"}
 	iconIssue           = &aw.Icon{Value: "icons/issue.png"}
 	iconLoading         = &aw.Icon{Value: "icons/loading.png"}
-	iconOff             = &aw.Icon{Value: "icons/off.png"}
-	iconOn              = &aw.Icon{Value: "icons/on.png"}
 	iconReload          = &aw.Icon{Value: "icons/reload.png"}
 	iconSettings        = &aw.Icon{Value: "icons/settings.png"}
-	iconTrash           = &aw.Icon{Value: "icons/trash.png"}
 	iconURL             = &aw.Icon{Value: "icons/url.png"}
 	iconUpdateAvailable = &aw.Icon{Value: "icons/update-available.png"}
 	iconUpdateOK        = &aw.Icon{Value: "icons/update-ok.png"}
 	iconWarning         = &aw.Icon{Value: "icons/warning.png"}
+	iconSublime         = &aw.Icon{Value: "icons/sublime.png"}
+	iconVSCode          = &aw.Icon{Value: "icons/vscode.png"}
+	// iconOff             = &aw.Icon{Value: "icons/off.png"}
+	// iconOn              = &aw.Icon{Value: "icons/on.png"}
+	// iconTrash           = &aw.Icon{Value: "icons/trash.png"}
+	// iconDocs            = &aw.Icon{Value: "icons/docs.png"}
 )
 
 func init() {

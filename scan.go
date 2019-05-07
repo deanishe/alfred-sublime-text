@@ -24,8 +24,8 @@ import (
 )
 
 var (
-	locateDBPath = "/var/db/locate.database"
-	scanners     = map[string]Scanner{
+	// locateDBPath = "/var/db/locate.database"
+	scanners = map[string]Scanner{
 		"find":   &findScanner{},
 		"mdfind": &mdfindScanner{},
 		"locate": &locateScanner{},
@@ -225,7 +225,11 @@ func (sm *ScanManager) dueScanners() []string {
 }
 
 func (sm *ScanManager) cacheName(name string) string {
-	return "projects-" + name + ".txt"
+	prefix := "sublime-"
+	if conf.VSCode {
+		prefix = "vscode-"
+	}
+	return prefix + "projects-" + name + ".txt"
 }
 
 // Load loads cached Projects.
@@ -243,21 +247,21 @@ func (sm *ScanManager) Load() ([]Project, error) {
 	return projs, err
 }
 
-// Find .sublime-project files with `mdfind`
+// Find files with `mdfind`
 type mdfindScanner struct{}
 
 func (s *mdfindScanner) Name() string { return "mdfind" }
 func (s *mdfindScanner) Scan(conf *config) (<-chan string, error) {
-	cmd := exec.Command("/usr/bin/mdfind", "-name", ".sublime-project")
+	cmd := exec.Command("/usr/bin/mdfind", "-name", "*"+fileExtension)
 	return lineCommand(cmd, s.Name())
 }
 
-// Find *.sublime-project files with `locate`
+// Find files with `locate`
 type locateScanner struct{}
 
 func (s *locateScanner) Name() string { return "locate" }
 func (s *locateScanner) Scan(conf *config) (<-chan string, error) {
-	cmd := exec.Command("/usr/bin/locate", "*.sublime-project")
+	cmd := exec.Command("/usr/bin/locate", "*"+fileExtension)
 	return lineCommand(cmd, s.Name())
 }
 
@@ -271,7 +275,7 @@ func (s *findScanner) Scan(conf *config) (<-chan string, error) {
 	for _, sp := range conf.SearchPaths {
 
 		argv := []string{sp.Path, "-maxdepth", fmt.Sprintf("%d", sp.Depth)}
-		argv = append(argv, "-type", "f", "-name", "*.sublime-project")
+		argv = append(argv, "-type", "f", "-name", "*"+fileExtension)
 
 		cmd := exec.Command("/usr/bin/find", argv...)
 
@@ -360,7 +364,7 @@ func filterExcludes(in <-chan string, patterns []string) <-chan string {
 
 func filterNotProject(in <-chan string) <-chan string {
 	return filterMatches(in, func(r string) bool {
-		return !strings.HasSuffix(r, ".sublime-project")
+		return !strings.HasSuffix(r, fileExtension)
 	})
 }
 
@@ -437,7 +441,7 @@ func cacheProjects(key string, in <-chan string) <-chan string {
 	return out
 }
 
-// Read .sublime-project files
+// Read Sublime/VSCode project files
 func resultToProject(in <-chan string) <-chan Project {
 
 	var out = make(chan Project)
@@ -446,15 +450,11 @@ func resultToProject(in <-chan string) <-chan Project {
 		defer close(out)
 
 		for p := range in {
-
-			var proj = Project{}
-
 			proj, err := NewProject(p)
 			if err != nil {
 				log.Printf("[scan] couldn't read project file (%s): %v", p, err)
 				continue
 			}
-
 			out <- proj
 		}
 	}()
@@ -472,7 +472,6 @@ func merge(ins ...<-chan string) <-chan string {
 	wg.Add(len(ins))
 
 	for _, in := range ins {
-
 		go func(in <-chan string) {
 			defer wg.Done()
 			for p := range in {
