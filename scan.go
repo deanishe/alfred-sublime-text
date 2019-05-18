@@ -80,7 +80,21 @@ func (sm *ScanManager) ScanDue() bool {
 		return true
 	}
 
+	// age, err := wf.Cache.Age(cacheKey)
+	// if err != nil {
+	// 	log.Printf("[scan] cache empty")
+	// 	return true
+	// }
+
+	// if fi, err := os.Stat(configFile); err == nil {
+	// 	if time.Now().Sub(fi.ModTime()) < age {
+	// 		log.Printf("[scan] config file has changed")
+	// 		return true
+	// 	}
+	// }
+
 	if len(sm.dueScanners()) > 0 {
+		log.Printf("[scan] cache expired")
 		return true
 	}
 
@@ -208,6 +222,15 @@ func (sm *ScanManager) dueScanners() []string {
 
 	if !wf.Cache.Exists(cacheKey) {
 		force = true
+	}
+
+	if age, err := wf.Cache.Age(cacheKey); err == nil {
+		if fi, err := os.Stat(configFile); err == nil {
+			if time.Now().Sub(fi.ModTime()) < age {
+				log.Printf("[scan] config file has changed")
+				force = true
+			}
+		}
 	}
 
 	for name := range sm.Scanners {

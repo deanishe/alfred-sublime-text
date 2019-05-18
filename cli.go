@@ -194,7 +194,7 @@ func runConfig() {
 		Arg(configFile).
 		UID("config").
 		Icon(iconSettings).
-		Var("action", "open --subl")
+		Var("action", "open")
 
 	wf.NewItem("View Help File").
 		Subtitle("Open workflow help in your browser").
@@ -265,7 +265,7 @@ func runOpen() {
 
 	var args []string
 	if opts.UseSublime {
-		args = append(args, "-a", "Sublime Text")
+		args = []string{"-a", "Sublime Text"}
 	}
 	args = append(args, opts.Path)
 
