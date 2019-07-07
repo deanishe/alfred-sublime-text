@@ -2,7 +2,7 @@ module github.com/deanishe/alfred-sublime-text
 
 require (
 	github.com/BurntSushi/toml v0.3.1
-	github.com/bmatcuk/doublestar v1.1.1
+	github.com/bmatcuk/doublestar v1.1.3
 	github.com/deanishe/awgo v0.16.2
 	github.com/disintegration/imaging v1.6.0
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
