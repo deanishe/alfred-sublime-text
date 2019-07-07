@@ -4,6 +4,8 @@ github.com/bmatcuk/doublestar v1.1.1 h1:YroD6BJCZBYx06yYFEWvUuKVWQn3vLLQAVmDmvTS
 github.com/bmatcuk/doublestar v1.1.1/go.mod h1:UD6OnuiIn0yFxxA2le/rnRU1G4RaI4UvFv1sNto9p6w=
 github.com/deanishe/awgo v0.16.2 h1:kl2LZcuHyb9ii1z4fg9pPRQa5kGguGDI+dy64hyOuDI=
 github.com/deanishe/awgo v0.16.2/go.mod h1:2a+ukSNkaIH6WWhuzH8f4yAOrODLct7bxaXaT6da9Gc=
+github.com/deanishe/awgo v0.20.2 h1:2hQwGoMJz8/+1MIXEvE2PQqBDIfIdjJiHWvYbNbZ5gU=
+github.com/deanishe/awgo v0.20.2/go.mod h1:2cRIRY+pgEcNHNAXzRyrrIiCpSHpvebc5dyDzeH5bV8=
 github.com/disintegration/imaging v1.6.0 h1:nVPXRUUQ36Z7MNf0O77UzgnOb1mkMMor7lmJMJXc/mA=
 github.com/disintegration/imaging v1.6.0/go.mod h1:xuIt+sRxDFrHS0drzXUlCJthkJ8k7lkkUojDSR247MQ=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh6AyO7hdCn/PkvCZXii8TGj7sbtEbQ=
