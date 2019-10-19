@@ -18,7 +18,6 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/magefile/mage/sh"
-	"github.com/pkg/errors"
 )
 
 func rotateIcon(path string, angles []int) error {
@@ -89,24 +88,24 @@ func copyImage(src, dest, colour string) error {
 	}
 
 	if f, err = os.Open(src); err != nil {
-		return errors.Wrap(err, "read image")
+		return fmt.Errorf("read image: %w", err)
 	}
 	defer f.Close()
 
 	if mask, _, err = image.Decode(f); err != nil {
-		return errors.Wrap(err, "decode image")
+		return fmt.Errorf("decode image: %w", err)
 	}
 
 	img := image.NewRGBA(mask.Bounds())
 	draw.DrawMask(img, img.Bounds(), &image.Uniform{c}, image.ZP, mask, image.ZP, draw.Src)
 
 	if f, err = os.Create(dest); err != nil {
-		return errors.Wrap(err, "open new image")
+		return fmt.Errorf("open new image: %w", err)
 	}
 	defer f.Close()
 
 	if err = png.Encode(f, img); err != nil {
-		return errors.Wrap(err, "write PNG data")
+		return fmt.Errorf("write PNG data: %w", err)
 	}
 
 	fmt.Printf("copied %s to %s using colour #%s\n", src, dest, colour)

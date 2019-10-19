@@ -63,9 +63,7 @@ func Build() error {
 	globs := []struct {
 		glob, dest string
 	}{
-		// {"../ical", ""},
 		{"*.png", ""},
-		// {"../mask.png", ""},
 		{"info.plist", ""},
 		{"*.html", ""},
 		{"README.md", ""},
@@ -124,7 +122,7 @@ func Run() error {
 	return sh.RunWith(alfredEnv(), "./alfsubl", "-h")
 }
 
-// Dist build an .alfred-workflow file in ./dist
+// Dist build an .alfredworkflow file in ./dist
 func Dist() error {
 	mg.SerialDeps(Clean, Build)
 	if err := os.MkdirAll("./dist", 0700); err != nil {

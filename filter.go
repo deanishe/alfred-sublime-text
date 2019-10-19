@@ -8,7 +8,7 @@
 
 package main
 
-// Filterer passes selectively passes through strings
+// Filterer selectively passes through strings
 type Filterer func(in <-chan string) <-chan string
 
 // Filter is a chain of Filterers

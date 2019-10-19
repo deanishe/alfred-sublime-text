@@ -9,40 +9,20 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"time"
 
-	"github.com/pkg/errors"
-
 	aw "github.com/deanishe/awgo"
 	"github.com/deanishe/awgo/util"
-	docopt "github.com/docopt/docopt-go"
 )
 
 var (
-	usage = `alfsubl <command> [<args>]
-
-Alfred workflow to show Sublime Text projects.
-
-Usage:
-    alfsubl search [<query>]
-    alfsubl config [<query>]
-    alfsubl open [--subl] <path>
-    alfsubl open-project <projfile>
-    alfsubl open-folder <projfile>
-    alfsubl rescan [--force]
-
-Options:
-    -s, --subl     open file in Sublime Text instead of default app
-    -f, --force    ignore cached data
-    -h, --help     show this message and exit
-    --version      show version number and exit
-`
-
-	conf *config
 	opts = &options{}
+	cli  = flag.NewFlagSet("alfsubl", flag.ContinueOnError)
 
 	// Candidate paths to `subl` command-line program. We'll open projects
 	// via `subl` because it correctly loads the workspace. Opening a
@@ -61,40 +41,48 @@ Options:
 
 // CLI flags
 type options struct {
-	// Sub-commands
+	// Commands
 	Search      bool
 	Config      bool
 	Ignore      bool
 	Open        bool
-	OpenProject bool `docopt:"open-project"`
-	OpenFolder  bool `docopt:"open-folder"`
+	OpenProject bool
+	OpenFolder  bool
 	Rescan      bool
 
 	// Options
-	Force      bool
-	UseSublime bool `docopt:"--subl"`
+	Force bool
 
 	// Arguments
-	Query       string
-	Path        string
-	ProjectPath string `docopt:"<projfile>"`
+	Query string
 }
 
-// Parse command-line flags
-func parseArgs(argv []string) error {
-	// log.Printf("argv=%#v", argv)
-	args, err := docopt.ParseArgs(usage, argv, wf.Version())
-	if err != nil {
-		return err
+func init() {
+	cli.BoolVar(&opts.Config, "conf", false, "show/filter configuration")
+	cli.BoolVar(&opts.Open, "open", false, "open specified file in default app")
+	cli.BoolVar(&opts.OpenProject, "project", false, "open specified project")
+	cli.BoolVar(&opts.OpenFolder, "folder", false, "open specified project")
+	cli.BoolVar(&opts.Rescan, "rescan", false, "re-scan for projects")
+	cli.BoolVar(&opts.Force, "force", false, "force rescan")
+	cli.Usage = func() {
+		fmt.Fprint(os.Stderr, `usage: alfsubl [options] [arguments]
+
+Alfred workflow to show Sublime Text/VSCode projects.
+
+Usage:
+    alfsubl [<query>]
+    alfsubl -conf [<query>]
+    alfsubl -open <path>
+    alfsubl -project <project file>
+    alfsubl -folder <project file>
+    alfsubl -rescan [-force]
+    alfsubl -h|-help
+
+Options:
+`)
+
+		cli.PrintDefaults()
 	}
-
-	if err := args.Bind(opts); err != nil {
-		return errors.Wrap(err, "bind CLI flags")
-	}
-
-	log.Printf("opts=%#v", opts)
-
-	return nil
 }
 
 func commandForProject(path string) *exec.Cmd {
@@ -122,8 +110,8 @@ func commandForProject(path string) *exec.Cmd {
 func runOpenProject() {
 	wf.Configure(aw.TextErrors(true))
 
-	log.Printf("opening project %q ...", opts.ProjectPath)
-	cmd := commandForProject(opts.ProjectPath)
+	log.Printf("opening project %q ...", opts.Query)
+	cmd := commandForProject(opts.Query)
 
 	if _, err := util.RunCmd(cmd); err != nil {
 		wf.Fatalf("exec command %#v: %v", cmd, err)
@@ -145,7 +133,7 @@ func runOpenFolder() {
 	}
 
 	for _, proj := range projs {
-		if proj.Path == opts.ProjectPath {
+		if proj.Path == opts.Query {
 			for _, path := range proj.Folders {
 
 				log.Printf("opening folder %q ...", path)
@@ -159,7 +147,7 @@ func runOpenFolder() {
 		}
 	}
 
-	wf.Fatalf("no folders found for project %q", opts.ProjectPath)
+	wf.Fatalf("no folders found for project %q", opts.Query)
 }
 
 // Filter configuration in Alfred
@@ -194,7 +182,7 @@ func runConfig() {
 		Arg(configFile).
 		UID("config").
 		Icon(iconSettings).
-		Var("action", "open")
+		Var("action", "-open")
 
 	wf.NewItem("View Help File").
 		Subtitle("Open workflow help in your browser").
@@ -202,7 +190,7 @@ func runConfig() {
 		UID("help").
 		Valid(true).
 		Icon(iconHelp).
-		Var("action", "open")
+		Var("action", "-open")
 
 	wf.NewItem("Report Issue").
 		Subtitle("Open workflow issue tracker in your browser").
@@ -210,7 +198,7 @@ func runConfig() {
 		UID("issue").
 		Valid(true).
 		Icon(iconIssue).
-		Var("action", "open")
+		Var("action", "-open")
 
 	wf.NewItem("Visit Forum Thread").
 		Subtitle("Open workflow thread on alfredforum.com in your browser").
@@ -218,7 +206,7 @@ func runConfig() {
 		UID("forum").
 		Valid(true).
 		Icon(iconURL).
-		Var("action", "open")
+		Var("action", "-open")
 
 	wf.NewItem("Rescan Projects").
 		Subtitle("Rebuild cached list of projects").
@@ -242,13 +230,13 @@ func runScan() {
 
 	if opts.Force {
 		if conf.FindInterval != 0 {
-			conf.FindInterval = time.Nanosecond * 1
+			conf.FindInterval = time.Nanosecond
 		}
 		if conf.MDFindInterval != 0 {
-			conf.MDFindInterval = time.Nanosecond * 1
+			conf.MDFindInterval = time.Nanosecond
 		}
 		if conf.LocateInterval != 0 {
-			conf.LocateInterval = time.Nanosecond * 1
+			conf.LocateInterval = time.Nanosecond
 		}
 	}
 
@@ -258,26 +246,21 @@ func runScan() {
 	}
 }
 
-// Open path/URL, optionally in Sublime
+// Open path/URL
 func runOpen() {
-
 	wf.Configure(aw.TextErrors(true))
 
 	var args []string
-	if opts.UseSublime {
-		args = []string{"-a", "Sublime Text"}
-	}
-	args = append(args, opts.Path)
+	args = append(args, opts.Query)
 
 	cmd := exec.Command("open", args...)
 	if _, err := util.RunCmd(cmd); err != nil {
-		wf.Fatalf("open %q: %v", opts.Path, err)
+		wf.Fatalf("open %q: %v", opts.Query, err)
 	}
 }
 
 // Filter Sublime projects in Alfred
 func runSearch() {
-
 	var (
 		projs []Project
 		err   error
@@ -291,9 +274,9 @@ func runSearch() {
 	// Run "alfsubl rescan" in background if need be
 	if sm.ScanDue() && !wf.IsRunning("rescan") {
 		log.Println("rescanning for projects ...")
-		cmd := exec.Command(os.Args[0], "rescan")
+		cmd := exec.Command(os.Args[0], "-rescan")
 		if err := wf.RunInBackground("rescan", cmd); err != nil {
-			log.Printf(`error running "%s rescan": %v`, os.Args[0], err)
+			log.Printf("error running rescan: %v", err)
 			wf.Fatal("Error scanning for repos. See log file.")
 		}
 	}
@@ -306,7 +289,6 @@ func runSearch() {
 	if len(projs) == 0 && wf.IsRunning("rescan") {
 
 		wf.Rerun(0.1)
-
 		wf.NewItem("Scanning projects…").
 			Subtitle("Results will refresh in a few seconds").
 			Valid(false).
@@ -330,7 +312,7 @@ func runSearch() {
 			UID(proj.Path).
 			IsFile(true).
 			Icon(icon).
-			Var("action", "open-project").
+			Var("action", "-project").
 			Var("close", "true")
 
 		if len(proj.Folders) > 0 {
@@ -343,7 +325,7 @@ func runSearch() {
 			it.NewModifier("cmd").
 				Subtitle(sub).
 				Icon(&aw.Icon{Value: "public.folder", Type: "filetype"}).
-				Var("action", "open-folder")
+				Var("action", "-folder")
 		}
 	}
 

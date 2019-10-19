@@ -1,19 +1,31 @@
 # How many directories deep to search by default.
-# 0 = the path itself
-# 1 = immediate children of the path
-# 2 = grandchildren of the path
+# 0 = the directory itself
+# 1 = immediate children of the directory
+# 2 = grandchildren of the directory
 # etc.
 # default: 2
 #
 # depth = 2
 
+
 # How long to cache the list of projects for.
-# default: 5m
+# default: 5m
 #
 # cache-age = "5m"
 
-# Each search path is specified by a [[paths]] header and
-# requires a path value.
+
+# git-style glob patterns of paths to ignore.
+# default: []
+#
+# E.g.:
+#
+# excludes = [
+#   "/Applications/*",
+#   "**/vim/undo/**",
+# ]
+
+# Additional paths to search with `find`.
+# Each search path is specified by a [[paths]] header and requires a path value.
 # E.g.:
 #
 #  [[paths]]
@@ -21,7 +33,7 @@
 #
 # You can override the default depth:
 #
-#
 #  [[paths]]
 #  path = "~/Code"
 #  depth = 3
+

@@ -9,9 +9,11 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"path/filepath"
 
+	"github.com/davecgh/go-spew/spew"
 	aw "github.com/deanishe/awgo"
 	"github.com/deanishe/awgo/update"
 )
@@ -37,14 +39,14 @@ func init() {
 
 // workflow entry point
 func run() {
-
 	var err error
-
-	// Command-line args
-	if err = parseArgs(wf.Args()); err != nil {
-		log.Printf("couldn't parse args (%#v): %v", wf.Args(), err)
-		wf.Fatal("Couldn't parse args. Check log file.")
+	if err = cli.Parse(wf.Args()); err != nil {
+		if err == flag.ErrHelp {
+			return
+		}
+		wf.FatalError(err)
 	}
+	opts.Query = cli.Arg(0)
 
 	// Load configuration file
 	if err = initConfig(); err != nil {
@@ -57,15 +59,16 @@ func run() {
 		wf.Fatal("Couldn't read config. Check log file.")
 	}
 
+	log.Printf("%#v", opts)
+	if wf.Debug() {
+		log.Printf("args=%#v => %#v", wf.Args(), cli.Args())
+		log.Print(spew.Sdump(conf))
+	}
+
 	// Naughtily switch globals to propagate VSCode mode
 	if conf.VSCode {
 		cacheKey = "vscode-projects.json"
 		fileExtension = ".code-workspace"
-	}
-
-	if opts.Search {
-		runSearch()
-		return
 	}
 
 	if opts.Config {
@@ -93,7 +96,7 @@ func run() {
 		return
 	}
 
-	wf.Fatal("Unknown Command")
+	runSearch()
 }
 
 // wrap run() in AwGo to catch and display panics

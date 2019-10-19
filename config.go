@@ -15,7 +15,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/deanishe/awgo/util"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -25,43 +24,48 @@ const (
 	DefaultDepth = 2
 
 	// DefaultFindInterval is how often to run find
-	DefaultFindInterval = time.Duration(5) * time.Minute
+	DefaultFindInterval = 5 * time.Minute
 
 	// DefaultMDFindInterval is how often to run mdfind
-	DefaultMDFindInterval = time.Duration(5) * time.Minute
+	DefaultMDFindInterval = 5 * time.Minute
 
 	// DefaultLocateInterval is how often to run locate
-	DefaultLocateInterval = time.Duration(24) * time.Hour
+	DefaultLocateInterval = 24 * time.Hour
 
 	defaultConfig = `# How many directories deep to search by default.
-# 0 = the path itself
-# 1 = immediate children of the path
-# 2 = grandchildren of the path
+# 0 = the directory itself
+# 1 = immediate children of the directory
+# 2 = grandchildren of the directory
 # etc.
 # default: 2
+#
 # depth = 2
 
+
 # How long to cache the list of projects for.
-# default: 5m
+# default: 5m
+#
 # cache-age = "5m"
 
-# Glob patterns for locations to exclude from results.
+
+# git-style glob patterns of paths to ignore.
+# default: []
+#
+# E.g.:
+#
 # excludes = [
-# 	"/Applications/*",
-# 	"**/.npm/*",
-# 	"/Volumes/Backup/**",
-# 	"**/vim/undo/**"
+#   "/Applications/*",
+#   "**/vim/undo/**",
 # ]
 
-# Each search path is specified by a [[paths]] header and
-# requires a path value.
+# Additional paths to search with "find".
+# Each search path is specified by a [[paths]] header and requires a path value.
 # E.g.:
 #
 #  [[paths]]
 #  path = "~/Dropbox"
 #
 # You can override the default depth:
-#
 #
 #  [[paths]]
 #  path = "~/Code"
@@ -70,27 +74,29 @@ const (
 `
 )
 
+var conf *config
+
+func init() {
+	conf = &config{
+		Depth:          DefaultDepth,
+		SearchPaths:    []*searchPath{},
+		FindInterval:   DefaultFindInterval,
+		MDFindInterval: DefaultMDFindInterval,
+		LocateInterval: DefaultLocateInterval,
+	}
+}
+
 type config struct {
 	// From workflow environment variables
 	FindInterval   time.Duration `toml:"-"`
 	MDFindInterval time.Duration `toml:"-"`
 	LocateInterval time.Duration `toml:"-"`
-	VSCode         bool          `toml:"-"`
+	VSCode         bool          `toml:"-" env:"VSCODE"`
 
 	// From config file
 	Excludes    []string      `toml:"excludes"`
 	Depth       int           `toml:"depth"`
 	SearchPaths []*searchPath `toml:"paths"`
-}
-
-func (c *config) String() string {
-	return fmt.Sprintf(`
-INTERVAL_FIND=%s
-INTERVAL_MDFIND=%s
-INTERVAL_LOCATE=%s
-VSCODE=%v
-depth=%d`, c.FindInterval, c.MDFindInterval,
-		c.LocateInterval, c.VSCode, c.Depth)
 }
 
 type searchPath struct {
@@ -104,7 +110,7 @@ type searchPath struct {
 func initConfig() error {
 	if !util.PathExists(configFile) {
 		if err := ioutil.WriteFile(configFile, []byte(defaultConfig), 0600); err != nil {
-			return errors.Wrap(err, "write config")
+			return fmt.Errorf("write config: %w", err)
 		}
 	}
 	return nil
@@ -124,18 +130,10 @@ func loadConfig(path string) (*config, error) {
 		return nil, err
 	}
 
-	if conf == nil { // config file was empty
-		conf = &config{
-			Depth:       DefaultDepth,
-			SearchPaths: []*searchPath{},
-		}
+	// Load workflow variables
+	if err := wf.Config.To(conf); err != nil {
+		return nil, err
 	}
-
-	// Environment variables
-	conf.FindInterval = wf.Config.GetDuration("INTERVAL_FIND", DefaultFindInterval)
-	conf.MDFindInterval = wf.Config.GetDuration("INTERVAL_MDFIND", DefaultMDFindInterval)
-	conf.LocateInterval = wf.Config.GetDuration("INTERVAL_LOCATE", DefaultLocateInterval)
-	conf.VSCode = wf.Config.GetBool("VSCODE", false)
 
 	// Update depths
 	if conf.Depth == 0 {
