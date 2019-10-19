@@ -226,7 +226,7 @@ func (sm *ScanManager) dueScanners() []string {
 
 	if age, err := wf.Cache.Age(cacheKey); err == nil {
 		if fi, err := os.Stat(configFile); err == nil {
-			if time.Now().Sub(fi.ModTime()) < age {
+			if time.Since(fi.ModTime()) < age {
 				log.Printf("[scan] config file has changed")
 				force = true
 			}
