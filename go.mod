@@ -4,7 +4,7 @@ require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/bmatcuk/doublestar v1.1.5
 	github.com/davecgh/go-spew v1.1.1
-	github.com/deanishe/awgo v0.20.4
+	github.com/deanishe/awgo v0.22.1
 	github.com/disintegration/imaging v1.6.1
 	github.com/gobwas/glob v0.2.3
 	github.com/magefile/mage v1.9.0
