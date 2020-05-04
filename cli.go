@@ -316,12 +316,10 @@ func runSearch() {
 			Var("close", "true")
 
 		if len(proj.Folders) > 0 {
-
 			sub := "Open Project Folder"
 			if len(proj.Folders) > 1 {
 				sub += "s"
 			}
-
 			it.NewModifier("cmd").
 				Subtitle(sub).
 				Icon(&aw.Icon{Value: "public.folder", Type: "filetype"}).

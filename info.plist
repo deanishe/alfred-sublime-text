@@ -29,16 +29,6 @@
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
-				<true/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>A18FD78E-C1F5-4B49-95D1-9ED40BA1E4D8</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
 				<false/>
 			</dict>
 		</array>
@@ -178,19 +168,6 @@
 				<true/>
 			</dict>
 		</array>
-		<key>A18FD78E-C1F5-4B49-95D1-9ED40BA1E4D8</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>D26E55A9-2B57-4343-8C9D-9223F1E3AA70</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>D545A35F-4FA1-469E-A8AB-A167D29E8D50</key>
 		<array>
 			<dict>
@@ -231,47 +208,31 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>alfredfiltersresults</key>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
 				<false/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>68</integer>
-				<key>keyword</key>
-				<string>.st</string>
-				<key>queuedelaycustom</key>
-				<integer>1</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<false/>
-				<key>queuedelaymode</key>
-				<integer>0</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string>Finding projects…</string>
-				<key>script</key>
-				<string>./alfsubl -- "$1"</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
+				<key>focusedappvariablename</key>
 				<string></string>
-				<key>subtext</key>
-				<string>Search and Open Sublime Text Projects</string>
-				<key>title</key>
-				<string>Sublime Text Projects</string>
-				<key>type</key>
+				<key>hotkey</key>
 				<integer>0</integer>
-				<key>withspace</key>
-				<true/>
+				<key>hotmod</key>
+				<integer>0</integer>
+				<key>hotstring</key>
+				<string></string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
+			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
-			<string>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</string>
+			<string>DA2EB775-5859-482A-8BF0-499164DCDA0B</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -314,60 +275,51 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>action</key>
-				<integer>0</integer>
-				<key>argument</key>
-				<integer>0</integer>
-				<key>focusedappvariable</key>
+				<key>alfredfiltersresults</key>
 				<false/>
-				<key>focusedappvariablename</key>
-				<string></string>
-				<key>hotkey</key>
+				<key>alfredfiltersresultsmatchmode</key>
 				<integer>0</integer>
-				<key>hotmod</key>
-				<integer>0</integer>
-				<key>hotstring</key>
-				<string></string>
-				<key>leftcursor</key>
+				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
-				<key>modsmode</key>
+				<key>argumenttrimmode</key>
 				<integer>0</integer>
-				<key>relatedAppsMode</key>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>keyword</key>
+				<string>.st</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
 				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.hotkey</string>
-			<key>uid</key>
-			<string>DA2EB775-5859-482A-8BF0-499164DCDA0B</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.hidealfred</string>
-			<key>uid</key>
-			<string>D26E55A9-2B57-4343-8C9D-9223F1E3AA70</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>inputstring</key>
-				<string>{var:close}</string>
-				<key>matchcasesensitive</key>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Finding projects…</string>
+				<key>script</key>
+				<string>./alfsubl -- "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Search and Open Sublime Text Projects</string>
+				<key>title</key>
+				<string>Sublime Text Projects</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
 				<true/>
-				<key>matchmode</key>
-				<integer>0</integer>
-				<key>matchstring</key>
-				<string>true</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.utility.filter</string>
+			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>A18FD78E-C1F5-4B49-95D1-9ED40BA1E4D8</string>
+			<string>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -376,6 +328,8 @@
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
 				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
@@ -414,7 +368,7 @@
 			<key>uid</key>
 			<string>9981F708-6C83-44CD-BC06-B6C10A2B00F6</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -476,6 +430,25 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>inputstring</key>
+				<string>{var:action}</string>
+				<key>matchcasesensitive</key>
+				<true/>
+				<key>matchmode</key>
+				<integer>1</integer>
+				<key>matchstring</key>
+				<string>rescan</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.filter</string>
+			<key>uid</key>
+			<string>2DBA4231-BA57-4BB8-9E1D-DD1F29FA2A8A</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>argument</key>
 				<string>{var:notification}</string>
 				<key>variables</key>
@@ -493,25 +466,6 @@
 			<string>alfred.workflow.utility.hidealfred</string>
 			<key>uid</key>
 			<string>671FF011-6B4E-45E5-B96B-4A6B87738E93</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>inputstring</key>
-				<string>{var:action}</string>
-				<key>matchcasesensitive</key>
-				<true/>
-				<key>matchmode</key>
-				<integer>1</integer>
-				<key>matchstring</key>
-				<string>rescan</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.filter</string>
-			<key>uid</key>
-			<string>2DBA4231-BA57-4BB8-9E1D-DD1F29FA2A8A</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -599,126 +553,110 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 		<key>0A75A8BC-3856-4729-B16A-62B167B2E91F</key>
 		<dict>
 			<key>xpos</key>
-			<integer>40</integer>
+			<integer>45</integer>
 			<key>ypos</key>
-			<integer>50</integer>
+			<integer>165</integer>
 		</dict>
 		<key>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</key>
 		<dict>
 			<key>note</key>
 			<string>Filter Sublime Text projects</string>
 			<key>xpos</key>
-			<integer>230</integer>
+			<integer>235</integer>
 			<key>ypos</key>
-			<integer>50</integer>
+			<integer>165</integer>
 		</dict>
 		<key>1958F9DC-5B69-4F0C-B4DC-FCBAE0AB1EF8</key>
 		<dict>
 			<key>xpos</key>
-			<integer>670</integer>
+			<integer>675</integer>
 			<key>ypos</key>
-			<integer>320</integer>
+			<integer>340</integer>
 		</dict>
 		<key>2DBA4231-BA57-4BB8-9E1D-DD1F29FA2A8A</key>
 		<dict>
 			<key>note</key>
 			<string>$action != rescan</string>
 			<key>xpos</key>
-			<integer>470</integer>
+			<integer>475</integer>
 			<key>ypos</key>
-			<integer>350</integer>
+			<integer>370</integer>
 		</dict>
 		<key>3044F153-18F7-41B3-949A-22D21BA52903</key>
 		<dict>
 			<key>xpos</key>
-			<integer>40</integer>
+			<integer>45</integer>
 			<key>ypos</key>
-			<integer>320</integer>
+			<integer>340</integer>
 		</dict>
 		<key>506077C9-6BF8-401D-B34D-ACAEAA975F30</key>
 		<dict>
 			<key>note</key>
 			<string>Open project/folder</string>
 			<key>xpos</key>
-			<integer>470</integer>
+			<integer>450</integer>
 			<key>ypos</key>
-			<integer>50</integer>
+			<integer>165</integer>
 		</dict>
 		<key>640C6327-8251-4BC6-B952-603E863B03D2</key>
 		<dict>
 			<key>note</key>
 			<string>$action == rescan</string>
 			<key>xpos</key>
-			<integer>470</integer>
+			<integer>475</integer>
 			<key>ypos</key>
-			<integer>500</integer>
+			<integer>520</integer>
 		</dict>
 		<key>671FF011-6B4E-45E5-B96B-4A6B87738E93</key>
 		<dict>
 			<key>xpos</key>
-			<integer>570</integer>
+			<integer>575</integer>
 			<key>ypos</key>
-			<integer>350</integer>
+			<integer>370</integer>
 		</dict>
 		<key>6756738D-5D8A-4FEC-9F39-8AF903ED1FD2</key>
 		<dict>
 			<key>xpos</key>
-			<integer>670</integer>
+			<integer>675</integer>
 			<key>ypos</key>
-			<integer>620</integer>
+			<integer>640</integer>
 		</dict>
 		<key>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</key>
 		<dict>
 			<key>xpos</key>
-			<integer>1070</integer>
+			<integer>1075</integer>
 			<key>ypos</key>
-			<integer>320</integer>
+			<integer>340</integer>
 		</dict>
 		<key>73C36700-35E0-40C2-A0AB-9D6B310FD946</key>
 		<dict>
 			<key>xpos</key>
-			<integer>980</integer>
+			<integer>985</integer>
 			<key>ypos</key>
-			<integer>350</integer>
+			<integer>370</integer>
 		</dict>
 		<key>9981F708-6C83-44CD-BC06-B6C10A2B00F6</key>
 		<dict>
 			<key>note</key>
 			<string>View workflow configuration</string>
 			<key>xpos</key>
-			<integer>230</integer>
+			<integer>235</integer>
 			<key>ypos</key>
-			<integer>320</integer>
-		</dict>
-		<key>A18FD78E-C1F5-4B49-95D1-9ED40BA1E4D8</key>
-		<dict>
-			<key>note</key>
-			<string>Hide Alfred</string>
-			<key>xpos</key>
-			<integer>470</integer>
-			<key>ypos</key>
-			<integer>220</integer>
-		</dict>
-		<key>D26E55A9-2B57-4343-8C9D-9223F1E3AA70</key>
-		<dict>
-			<key>xpos</key>
-			<integer>570</integer>
-			<key>ypos</key>
-			<integer>220</integer>
+			<integer>340</integer>
 		</dict>
 		<key>D545A35F-4FA1-469E-A8AB-A167D29E8D50</key>
 		<dict>
 			<key>xpos</key>
-			<integer>670</integer>
+			<integer>675</integer>
 			<key>ypos</key>
-			<integer>470</integer>
+			<integer>490</integer>
 		</dict>
 		<key>DA2EB775-5859-482A-8BF0-499164DCDA0B</key>
 		<dict>
 			<key>xpos</key>
-			<integer>40</integer>
+			<integer>45</integer>
 			<key>ypos</key>
-			<integer>180</integer>
+			<integer>35</integer>
 		</dict>
 	</dict>
 	<key>variables</key>
@@ -733,8 +671,8 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 		<string>false</string>
 	</dict>
 	<key>version</key>
-	<string>3.1.1</string>
+	<string>3.1.2</string>
 	<key>webaddress</key>
-	<string></string>
+	<string>https://github.com/deanishe/alfred-sublime-text</string>
 </dict>
 </plist>

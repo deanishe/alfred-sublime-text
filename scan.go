@@ -9,6 +9,7 @@
 package main
 
 import (
+	"sort"
 	"bufio"
 	"bytes"
 	"fmt"
@@ -75,35 +76,18 @@ func NewScanManager(conf *config) *ScanManager {
 
 // ScanDue returns true if one or more scanners needs updating.
 func (sm *ScanManager) ScanDue() bool {
-
 	if !wf.Cache.Exists(cacheKey) {
 		return true
 	}
-
-	// age, err := wf.Cache.Age(cacheKey)
-	// if err != nil {
-	// 	log.Printf("[scan] cache empty")
-	// 	return true
-	// }
-
-	// if fi, err := os.Stat(configFile); err == nil {
-	// 	if time.Now().Sub(fi.ModTime()) < age {
-	// 		log.Printf("[scan] config file has changed")
-	// 		return true
-	// 	}
-	// }
-
 	if len(sm.dueScanners()) > 0 {
 		log.Printf("[scan] cache expired")
 		return true
 	}
-
 	return false
 }
 
 // Scan updates the cached lists of projects.
 func (sm *ScanManager) Scan() error {
-
 	var (
 		due   = map[string]bool{}
 		ins   []<-chan string
@@ -117,7 +101,6 @@ func (sm *ScanManager) Scan() error {
 	}
 
 	for name := range sm.Scanners {
-
 		if !sm.IsActive(name) {
 			// Clear any cached results
 			if err := wf.Cache.Store(sm.cacheName(name), nil); err != nil {
@@ -179,17 +162,14 @@ func (sm *ScanManager) IsDue(name string) bool {
 
 // load data from cache.
 func (sm *ScanManager) scanFromCache(name string) <-chan string {
-
 	var (
 		key = sm.cacheName(name)
 		out = make(chan string)
 	)
 
 	go func() {
-
-		defer util.Timed(time.Now(), fmt.Sprintf(`[cache] loaded "%s"`, name))
-
 		defer close(out)
+		defer util.Timed(time.Now(), fmt.Sprintf(`[cache] loaded "%s"`, name))
 
 		if !wf.Cache.Exists(key) {
 			return
@@ -214,7 +194,6 @@ func (sm *ScanManager) scanFromCache(name string) <-chan string {
 }
 
 func (sm *ScanManager) dueScanners() []string {
-
 	var (
 		due   []string
 		force bool
@@ -234,7 +213,6 @@ func (sm *ScanManager) dueScanners() []string {
 	}
 
 	for name := range sm.Scanners {
-
 		if !sm.IsActive(name) {
 			continue
 		}
@@ -243,7 +221,6 @@ func (sm *ScanManager) dueScanners() []string {
 			due = append(due, name)
 		}
 	}
-
 	return due
 }
 
@@ -256,18 +233,11 @@ func (sm *ScanManager) cacheName(name string) string {
 }
 
 // Load loads cached Projects.
-func (sm *ScanManager) Load() ([]Project, error) {
-
-	var (
-		projs []Project
-		err   error
-	)
-
+func (sm *ScanManager) Load() (projects []Project, err error) {
 	if wf.Cache.Exists(cacheKey) {
-		err = wf.Cache.LoadJSON(cacheKey, &projs)
+		err = wf.Cache.LoadJSON(cacheKey, &projects)
 	}
-
-	return projs, err
+	return
 }
 
 // Find files with `mdfind`
@@ -275,8 +245,8 @@ type mdfindScanner struct{}
 
 func (s *mdfindScanner) Name() string { return "mdfind" }
 func (s *mdfindScanner) Scan(conf *config) (<-chan string, error) {
-	cmd := exec.Command("/usr/bin/mdfind", "-name", "*"+fileExtension)
-	return lineCommand(cmd, s.Name())
+	cmd := exec.Command("/usr/bin/mdfind", fmt.Sprintf("kMDItemFSName == '*%s'", fileExtension))
+	return lineCommand(cmd, "mdfind")
 }
 
 // Find files with `locate`
@@ -285,28 +255,23 @@ type locateScanner struct{}
 func (s *locateScanner) Name() string { return "locate" }
 func (s *locateScanner) Scan(conf *config) (<-chan string, error) {
 	cmd := exec.Command("/usr/bin/locate", "*"+fileExtension)
-	return lineCommand(cmd, s.Name())
+	return lineCommand(cmd, "locate")
 }
 
+// Find files with `find`
 type findScanner struct{}
 
 func (s *findScanner) Name() string { return "find" }
 func (s *findScanner) Scan(conf *config) (<-chan string, error) {
 
 	var chs []<-chan string
-
 	for _, sp := range conf.SearchPaths {
-
 		argv := []string{sp.Path, "-maxdepth", fmt.Sprintf("%d", sp.Depth)}
 		argv = append(argv, "-type", "f", "-name", "*"+fileExtension)
-
-		cmd := exec.Command("/usr/bin/find", argv...)
-
-		ch, err := lineCommand(cmd, fmt.Sprintf("[%s] %s", s.Name(), sp.Path))
+		ch, err := lineCommand(exec.Command("/usr/bin/find", argv...), "[find] " + sp.Path)
 		if err != nil {
 			return nil, err
 		}
-
 		chs = append(chs, ch)
 	}
 
@@ -322,7 +287,6 @@ func lineCommand(cmd *exec.Cmd, name string) (chan string, error) {
 	)
 
 	go func() {
-
 		defer close(out)
 		defer util.Timed(time.Now(), fmt.Sprintf("%s scan", name))
 
@@ -331,13 +295,12 @@ func lineCommand(cmd *exec.Cmd, name string) (chan string, error) {
 			log.Printf("[%s] command failed: %v", name, err)
 			return
 		}
-
 		if err := cmd.Start(); err != nil {
 			log.Printf("[%s] command failed: %v", name, err)
 			return
 		}
 
-		// Read mdfind output and send it to channel
+		// Read output and send it to channel
 		scanner := bufio.NewScanner(stdout)
 		for scanner.Scan() {
 			out <- scanner.Text()
@@ -345,7 +308,6 @@ func lineCommand(cmd *exec.Cmd, name string) (chan string, error) {
 		if err := scanner.Err(); err != nil {
 			log.Printf("[%s] couldn't parse output: %v", name, err)
 		}
-
 		if err != cmd.Wait() {
 			log.Printf("[%s] command failed: %v", name, err)
 		}
@@ -395,7 +357,6 @@ func filterNotProject(in <-chan string) <-chan string {
 func filterNotExist(in <-chan string) <-chan string {
 	return filterMatches(in, func(r string) bool {
 		if _, err := os.Stat(r); err != nil {
-			// log.Printf("[filter] doesn't exist: %s", p)
 			return true
 		}
 		return false
@@ -404,16 +365,11 @@ func filterNotExist(in <-chan string) <-chan string {
 
 // Filter files that have already passed through.
 func filterDupes(in <-chan string) <-chan string {
-
 	seen := map[string]bool{}
-
 	return filterMatches(in, func(r string) bool {
-
 		if seen[r] {
-			// log.Printf("[filter] duplicate: %s", r.String())
 			return true
 		}
-
 		seen[r] = true
 		return false
 	})
@@ -421,12 +377,9 @@ func filterDupes(in <-chan string) <-chan string {
 
 // passes through paths from in to out, ignoring those for which ignore(path) returns true.
 func filterMatches(in <-chan string, ignore func(r string) bool) <-chan string {
-
 	var out = make(chan string)
-
 	go func() {
 		defer close(out)
-
 		for p := range in {
 			if ignore(p) {
 				continue
@@ -440,19 +393,19 @@ func filterMatches(in <-chan string, ignore func(r string) bool) <-chan string {
 
 func cacheProjects(key string, in <-chan string) <-chan string {
 
-	projs := []string{}
-
-	var out = make(chan string)
+	var (
+		projs = []string{}
+		out = make(chan string)
+	)
 
 	go func() {
-
 		defer close(out)
-
 		for p := range in {
 			projs = append(projs, p)
 			out <- p
 		}
 
+		sort.Sort(sort.StringSlice(projs))
 		data := []byte(strings.Join(projs, "\n"))
 		if err := wf.Cache.Store(key, data); err != nil {
 			log.Printf("[cache] error storing %s: %v", key, err)
@@ -466,12 +419,10 @@ func cacheProjects(key string, in <-chan string) <-chan string {
 
 // Read Sublime/VSCode project files
 func resultToProject(in <-chan string) <-chan Project {
-
 	var out = make(chan Project)
 
 	go func() {
 		defer close(out)
-
 		for p := range in {
 			proj, err := NewProject(p)
 			if err != nil {
@@ -493,7 +444,6 @@ func merge(ins ...<-chan string) <-chan string {
 	)
 
 	wg.Add(len(ins))
-
 	for _, in := range ins {
 		go func(in <-chan string) {
 			defer wg.Done()
