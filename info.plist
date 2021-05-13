@@ -6,11 +6,34 @@
 	<string>net.deanishe.alfred.sublime-text-projects</string>
 	<key>connections</key>
 	<dict>
-		<key>0A75A8BC-3856-4729-B16A-62B167B2E91F</key>
+		<key>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</string>
+				<string>5282A865-7975-4E03-83E0-721FD575334A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>1F866CED-855C-4BA8-A031-00095FD859ED</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+		</array>
+		<key>1CEDBB35-EAA1-404C-BC8F-3155EAFFBBAA</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>08710451-91D1-4889-A4BC-D21F87618050</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -19,7 +42,7 @@
 				<false/>
 			</dict>
 		</array>
-		<key>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</key>
+		<key>1F866CED-855C-4BA8-A031-00095FD859ED</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -31,12 +54,9 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
-		</array>
-		<key>1958F9DC-5B69-4F0C-B4DC-FCBAE0AB1EF8</key>
-		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>73C36700-35E0-40C2-A0AB-9D6B310FD946</string>
+				<string>F28D2683-4749-40DE-827D-B9692F6B6842</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -44,25 +64,9 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
-		</array>
-		<key>2DBA4231-BA57-4BB8-9E1D-DD1F29FA2A8A</key>
-		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>671FF011-6B4E-45E5-B96B-4A6B87738E93</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>3044F153-18F7-41B3-949A-22D21BA52903</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>9981F708-6C83-44CD-BC06-B6C10A2B00F6</string>
+				<string>1CEDBB35-EAA1-404C-BC8F-3155EAFFBBAA</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -75,7 +79,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>73C36700-35E0-40C2-A0AB-9D6B310FD946</string>
+				<string>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -84,31 +88,11 @@
 				<false/>
 			</dict>
 		</array>
-		<key>640C6327-8251-4BC6-B952-603E863B03D2</key>
+		<key>5282A865-7975-4E03-83E0-721FD575334A</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>73C36700-35E0-40C2-A0AB-9D6B310FD946</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>D545A35F-4FA1-469E-A8AB-A167D29E8D50</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>6756738D-5D8A-4FEC-9F39-8AF903ED1FD2</string>
+				<string>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -117,11 +101,11 @@
 				<false/>
 			</dict>
 		</array>
-		<key>671FF011-6B4E-45E5-B96B-4A6B87738E93</key>
+		<key>56EDA9A1-C8C3-4549-B3C3-6AA5DE031A82</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>1958F9DC-5B69-4F0C-B4DC-FCBAE0AB1EF8</string>
+				<string>228E56B9-B502-47BC-A003-D5EEF34EAE57</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -132,53 +116,27 @@
 		</array>
 		<key>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</key>
 		<array/>
-		<key>73C36700-35E0-40C2-A0AB-9D6B310FD946</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>9981F708-6C83-44CD-BC06-B6C10A2B00F6</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>2DBA4231-BA57-4BB8-9E1D-DD1F29FA2A8A</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<true/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>640C6327-8251-4BC6-B952-603E863B03D2</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<true/>
-			</dict>
-		</array>
-		<key>D545A35F-4FA1-469E-A8AB-A167D29E8D50</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</string>
+				<string>5282A865-7975-4E03-83E0-721FD575334A</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
 				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>1F866CED-855C-4BA8-A031-00095FD859ED</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<true/>
 			</dict>
 		</array>
 		<key>DA2EB775-5859-482A-8BF0-499164DCDA0B</key>
@@ -186,6 +144,19 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>F28D2683-4749-40DE-827D-B9692F6B6842</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>56EDA9A1-C8C3-4549-B3C3-6AA5DE031A82</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -205,6 +176,27 @@
 	<string>Sublime Text Projects</string>
 	<key>objects</key>
 	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Sublime Text</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -239,13 +231,73 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>triggerid</key>
-				<string>projects</string>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>keyword</key>
+				<string>.st</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Finding projects…</string>
+				<key>script</key>
+				<string>./alfred-sublime -search -- "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Search and Open Sublime Text Projects</string>
+				<key>title</key>
+				<string>Sublime Text Projects</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>search</string>
+				<key>inputmode</key>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.trigger.external</string>
+			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>0A75A8BC-3856-4729-B16A-62B167B2E91F</string>
+			<string>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{var:notification}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>5282A865-7975-4E03-83E0-721FD575334A</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -257,7 +309,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>./alfsubl $action "$1"</string>
+				<string>./alfred-sublime $@</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -286,58 +338,7 @@
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
-				<integer>68</integer>
-				<key>keyword</key>
-				<string>.st</string>
-				<key>queuedelaycustom</key>
-				<integer>1</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<false/>
-				<key>queuedelaymode</key>
-				<integer>0</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string>Finding projects…</string>
-				<key>script</key>
-				<string>./alfsubl -- "$1"</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>subtext</key>
-				<string>Search and Open Sublime Text Projects</string>
-				<key>title</key>
-				<string>Sublime Text Projects</string>
-				<key>type</key>
-				<integer>0</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>alfredfiltersresults</key>
-				<false/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<false/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
 				<integer>127</integer>
-				<key>keyword</key>
-				<string>.stconfig</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -349,7 +350,7 @@
 				<key>runningsubtext</key>
 				<string>Reading settings…</string>
 				<key>script</key>
-				<string>./alfsubl -conf -- "$1"</string>
+				<string>./alfred-sublime -conf -- "$1"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -363,6 +364,13 @@
 				<key>withspace</key>
 				<true/>
 			</dict>
+			<key>inboundconfig</key>
+			<dict>
+				<key>externalid</key>
+				<string>config</string>
+				<key>inputmode</key>
+				<integer>1</integer>
+			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
@@ -373,153 +381,10 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>./alfsubl $action -- "$1"</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>1958F9DC-5B69-4F0C-B4DC-FCBAE0AB1EF8</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>{query}</string>
-				<key>title</key>
-				<string>Sublime Text</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>triggerid</key>
-				<string>config</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.external</string>
-			<key>uid</key>
-			<string>3044F153-18F7-41B3-949A-22D21BA52903</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>inputstring</key>
-				<string>{var:action}</string>
-				<key>matchcasesensitive</key>
-				<true/>
-				<key>matchmode</key>
-				<integer>1</integer>
-				<key>matchstring</key>
-				<string>rescan</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.filter</string>
-			<key>uid</key>
-			<string>2DBA4231-BA57-4BB8-9E1D-DD1F29FA2A8A</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argument</key>
-				<string>{var:notification}</string>
-				<key>variables</key>
-				<dict/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.argument</string>
-			<key>uid</key>
-			<string>73C36700-35E0-40C2-A0AB-9D6B310FD946</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.hidealfred</string>
-			<key>uid</key>
-			<string>671FF011-6B4E-45E5-B96B-4A6B87738E93</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>./alfsubl -rescan -force
-
-echo -n "Scan complete"</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>D545A35F-4FA1-469E-A8AB-A167D29E8D50</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>inputstring</key>
-				<string>{var:action}</string>
-				<key>matchcasesensitive</key>
-				<true/>
-				<key>matchmode</key>
-				<integer>0</integer>
-				<key>matchstring</key>
-				<string>rescan</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.filter</string>
-			<key>uid</key>
-			<string>640C6327-8251-4BC6-B952-603E863B03D2</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>externaltriggerid</key>
-				<string>config</string>
+				<string>{var:trigger}</string>
 				<key>passinputasargument</key>
-				<false/>
+				<true/>
 				<key>passvariables</key>
 				<false/>
 				<key>workflowbundleid</key>
@@ -528,7 +393,99 @@ echo -n "Scan complete"</string>
 			<key>type</key>
 			<string>alfred.workflow.output.callexternaltrigger</string>
 			<key>uid</key>
-			<string>6756738D-5D8A-4FEC-9F39-8AF903ED1FD2</string>
+			<string>228E56B9-B502-47BC-A003-D5EEF34EAE57</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>inputstring</key>
+				<string>{var:trigger}</string>
+				<key>matchcasesensitive</key>
+				<true/>
+				<key>matchmode</key>
+				<integer>1</integer>
+				<key>matchstring</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.filter</string>
+			<key>uid</key>
+			<string>F28D2683-4749-40DE-827D-B9692F6B6842</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>.
+/------------- ACTION IN -------------\
+query={query}
+variables={allvars}
+\------------- ACTION OUT ------------/</string>
+				<key>cleardebuggertext</key>
+				<false/>
+				<key>processoutputs</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.debug</string>
+			<key>uid</key>
+			<string>1F866CED-855C-4BA8-A031-00095FD859ED</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>json</key>
+				<string>{
+  "alfredworkflow" : {
+    "arg" : "{var:query}",
+    "config" : {
+      "passinputasargument" : true,
+      "externaltriggerid" : "{var:trigger}",
+      "workflowbundleid" : "self",
+      "passvariables" : false
+    },
+    "variables" : {
+    }
+  }
+}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.json</string>
+			<key>uid</key>
+			<string>56EDA9A1-C8C3-4549-B3C3-6AA5DE031A82</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.hidealfred</string>
+			<key>uid</key>
+			<string>08710451-91D1-4889-A4BC-D21F87618050</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>inputstring</key>
+				<string>{var:hide_alfred}</string>
+				<key>matchcasesensitive</key>
+				<false/>
+				<key>matchmode</key>
+				<integer>2</integer>
+				<key>matchstring</key>
+				<string>(1|true)</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.filter</string>
+			<key>uid</key>
+			<string>1CEDBB35-EAA1-404C-BC8F-3155EAFFBBAA</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -550,106 +507,81 @@ Set VSCODE to 1 (or true) to find VSCode projects instead of Sublime ones.
 To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</string>
 	<key>uidata</key>
 	<dict>
-		<key>0A75A8BC-3856-4729-B16A-62B167B2E91F</key>
+		<key>08710451-91D1-4889-A4BC-D21F87618050</key>
 		<dict>
 			<key>xpos</key>
-			<integer>45</integer>
+			<integer>690</integer>
 			<key>ypos</key>
-			<integer>165</integer>
+			<integer>290</integer>
 		</dict>
 		<key>0D6DB001-6C1A-4973-BD3C-0CD4706096CB</key>
 		<dict>
 			<key>note</key>
 			<string>Filter Sublime Text projects</string>
 			<key>xpos</key>
-			<integer>235</integer>
+			<integer>240</integer>
 			<key>ypos</key>
-			<integer>165</integer>
+			<integer>35</integer>
 		</dict>
-		<key>1958F9DC-5B69-4F0C-B4DC-FCBAE0AB1EF8</key>
+		<key>1CEDBB35-EAA1-404C-BC8F-3155EAFFBBAA</key>
 		<dict>
 			<key>xpos</key>
-			<integer>675</integer>
+			<integer>605</integer>
 			<key>ypos</key>
-			<integer>340</integer>
+			<integer>290</integer>
 		</dict>
-		<key>2DBA4231-BA57-4BB8-9E1D-DD1F29FA2A8A</key>
-		<dict>
-			<key>note</key>
-			<string>$action != rescan</string>
-			<key>xpos</key>
-			<integer>475</integer>
-			<key>ypos</key>
-			<integer>370</integer>
-		</dict>
-		<key>3044F153-18F7-41B3-949A-22D21BA52903</key>
+		<key>1F866CED-855C-4BA8-A031-00095FD859ED</key>
 		<dict>
 			<key>xpos</key>
-			<integer>45</integer>
+			<integer>480</integer>
 			<key>ypos</key>
-			<integer>340</integer>
+			<integer>240</integer>
+		</dict>
+		<key>228E56B9-B502-47BC-A003-D5EEF34EAE57</key>
+		<dict>
+			<key>xpos</key>
+			<integer>1010</integer>
+			<key>ypos</key>
+			<integer>210</integer>
 		</dict>
 		<key>506077C9-6BF8-401D-B34D-ACAEAA975F30</key>
 		<dict>
 			<key>note</key>
-			<string>Open project/folder</string>
+			<string>Perform action</string>
 			<key>xpos</key>
-			<integer>450</integer>
+			<integer>610</integer>
 			<key>ypos</key>
-			<integer>165</integer>
+			<integer>115</integer>
 		</dict>
-		<key>640C6327-8251-4BC6-B952-603E863B03D2</key>
-		<dict>
-			<key>note</key>
-			<string>$action == rescan</string>
-			<key>xpos</key>
-			<integer>475</integer>
-			<key>ypos</key>
-			<integer>520</integer>
-		</dict>
-		<key>671FF011-6B4E-45E5-B96B-4A6B87738E93</key>
+		<key>5282A865-7975-4E03-83E0-721FD575334A</key>
 		<dict>
 			<key>xpos</key>
-			<integer>575</integer>
+			<integer>485</integer>
 			<key>ypos</key>
-			<integer>370</integer>
+			<integer>65</integer>
 		</dict>
-		<key>6756738D-5D8A-4FEC-9F39-8AF903ED1FD2</key>
+		<key>56EDA9A1-C8C3-4549-B3C3-6AA5DE031A82</key>
 		<dict>
 			<key>xpos</key>
-			<integer>675</integer>
+			<integer>925</integer>
 			<key>ypos</key>
-			<integer>640</integer>
+			<integer>240</integer>
 		</dict>
 		<key>6F4C4F63-0697-43E5-B54D-317C51DFE8D5</key>
 		<dict>
 			<key>xpos</key>
-			<integer>1075</integer>
+			<integer>1010</integer>
 			<key>ypos</key>
-			<integer>340</integer>
-		</dict>
-		<key>73C36700-35E0-40C2-A0AB-9D6B310FD946</key>
-		<dict>
-			<key>xpos</key>
-			<integer>985</integer>
-			<key>ypos</key>
-			<integer>370</integer>
+			<integer>35</integer>
 		</dict>
 		<key>9981F708-6C83-44CD-BC06-B6C10A2B00F6</key>
 		<dict>
 			<key>note</key>
 			<string>View workflow configuration</string>
 			<key>xpos</key>
-			<integer>235</integer>
+			<integer>240</integer>
 			<key>ypos</key>
-			<integer>340</integer>
-		</dict>
-		<key>D545A35F-4FA1-469E-A8AB-A167D29E8D50</key>
-		<dict>
-			<key>xpos</key>
-			<integer>675</integer>
-			<key>ypos</key>
-			<integer>490</integer>
+			<integer>210</integer>
 		</dict>
 		<key>DA2EB775-5859-482A-8BF0-499164DCDA0B</key>
 		<dict>
@@ -657,6 +589,13 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 			<integer>45</integer>
 			<key>ypos</key>
 			<integer>35</integer>
+		</dict>
+		<key>F28D2683-4749-40DE-827D-B9692F6B6842</key>
+		<dict>
+			<key>xpos</key>
+			<integer>850</integer>
+			<key>ypos</key>
+			<integer>240</integer>
 		</dict>
 	</dict>
 	<key>variables</key>
@@ -671,7 +610,7 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 		<string>false</string>
 	</dict>
 	<key>version</key>
-	<string>3.1.2</string>
+	<string>3.2.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/deanishe/alfred-sublime-text</string>
 </dict>

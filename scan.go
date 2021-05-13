@@ -9,13 +9,13 @@
 package main
 
 import (
-	"sort"
 	"bufio"
 	"bytes"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -268,7 +268,7 @@ func (s *findScanner) Scan(conf *config) (<-chan string, error) {
 	for _, sp := range conf.SearchPaths {
 		argv := []string{sp.Path, "-maxdepth", fmt.Sprintf("%d", sp.Depth)}
 		argv = append(argv, "-type", "f", "-name", "*"+fileExtension)
-		ch, err := lineCommand(exec.Command("/usr/bin/find", argv...), "[find] " + sp.Path)
+		ch, err := lineCommand(exec.Command("/usr/bin/find", argv...), "[find] "+sp.Path)
 		if err != nil {
 			return nil, err
 		}
@@ -395,7 +395,7 @@ func cacheProjects(key string, in <-chan string) <-chan string {
 
 	var (
 		projs = []string{}
-		out = make(chan string)
+		out   = make(chan string)
 	)
 
 	go func() {

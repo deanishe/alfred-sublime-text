@@ -14,6 +14,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	aw "github.com/deanishe/awgo"
@@ -29,6 +30,7 @@ var (
 	// project with "Sublime Text.app" doesn't.
 	sublPaths = []string{
 		"/usr/local/bin/subl",
+		"/Applications/Sublime Text 4.app/Contents/SharedSupport/bin/subl",
 		"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl",
 	}
 	// Candidate paths to `code` command-line program.
@@ -58,6 +60,7 @@ type options struct {
 }
 
 func init() {
+	cli.BoolVar(&opts.Search, "search", false, "search projects")
 	cli.BoolVar(&opts.Config, "conf", false, "show/filter configuration")
 	cli.BoolVar(&opts.Open, "open", false, "open specified file in default app")
 	cli.BoolVar(&opts.OpenProject, "project", false, "open specified project")
@@ -65,18 +68,18 @@ func init() {
 	cli.BoolVar(&opts.Rescan, "rescan", false, "re-scan for projects")
 	cli.BoolVar(&opts.Force, "force", false, "force rescan")
 	cli.Usage = func() {
-		fmt.Fprint(os.Stderr, `usage: alfsubl [options] [arguments]
+		fmt.Fprint(os.Stderr, `usage: alfred-sublime [options] [arguments]
 
 Alfred workflow to show Sublime Text/VSCode projects.
 
 Usage:
-    alfsubl [<query>]
-    alfsubl -conf [<query>]
-    alfsubl -open <path>
-    alfsubl -project <project file>
-    alfsubl -folder <project file>
-    alfsubl -rescan [-force]
-    alfsubl -h|-help
+    alfred-sublime -search [<query>]
+    alfred-sublime -conf [<query>]
+    alfred-sublime -open <path>
+    alfred-sublime -project <project file>
+    alfred-sublime -folder <project file>
+    alfred-sublime -rescan [-force]
+    alfred-sublime -h|-help
 
 Options:
 `)
@@ -156,6 +159,8 @@ func runConfig() {
 	// prevent Alfred from re-ordering results
 	if opts.Query == "" {
 		wf.Configure(aw.SuppressUIDs(true))
+	} else {
+		wf.Var("query", opts.Query)
 	}
 
 	log.Printf("filtering config %q ...", opts.Query)
@@ -179,45 +184,49 @@ func runConfig() {
 	wf.NewItem("Edit Config File").
 		Subtitle("Edit directories to scan").
 		Valid(true).
-		Arg(configFile).
+		Arg("-open", "--", configFile).
 		UID("config").
 		Icon(iconSettings).
-		Var("action", "-open")
+		Var("hide_alfred", "true")
 
 	wf.NewItem("View Help File").
 		Subtitle("Open workflow help in your browser").
-		Arg("README.html").
+		Arg("-open", "README.html").
 		UID("help").
 		Valid(true).
 		Icon(iconHelp).
-		Var("action", "-open")
+		Var("hide_alfred", "true")
 
 	wf.NewItem("Report Issue").
 		Subtitle("Open workflow issue tracker in your browser").
-		Arg(issueTrackerURL).
+		Arg("-open", issueTrackerURL).
 		UID("issue").
 		Valid(true).
 		Icon(iconIssue).
-		Var("action", "-open")
+		Var("hide_alfred", "true")
 
 	wf.NewItem("Visit Forum Thread").
 		Subtitle("Open workflow thread on alfredforum.com in your browser").
-		Arg(forumThreadURL).
+		Arg("-open", forumThreadURL).
 		UID("forum").
 		Valid(true).
 		Icon(iconURL).
-		Var("action", "-open")
+		Var("hide_alfred", "true")
 
+	// TODO: add "back to" setting for rescan command
 	wf.NewItem("Rescan Projects").
 		Subtitle("Rebuild cached list of projects").
+		Arg("-rescan", "-force").
 		Valid(true).
 		UID("rescan").
 		Icon(iconReload).
-		Var("action", "rescan").
-		Var("notification", "Reloading project list…")
+		// Var("hide_alfred", "false").
+		Var("notification", "Reloading project list…").
+		Var("trigger", "config")
 
 	if opts.Query != "" {
 		wf.Filter(opts.Query)
+		addNavigationItems(opts.Query, "config", "rescan")
 	}
 
 	wf.WarnEmpty("No Matching Items", "Try a different query")
@@ -244,6 +253,7 @@ func runScan() {
 	if err := sm.Scan(); err != nil {
 		wf.FatalError(err)
 	}
+	fmt.Print("Project scan completed")
 }
 
 // Open path/URL
@@ -292,7 +302,7 @@ func runSearch() {
 		wf.NewItem("Scanning projects…").
 			Subtitle("Results will refresh in a few seconds").
 			Valid(false).
-			Icon(ReloadIcon())
+			Icon(iconSpinner())
 
 		wf.SendFeedback()
 		return
@@ -308,12 +318,11 @@ func runSearch() {
 		it := wf.NewItem(proj.Name()).
 			Subtitle(util.PrettyPath(proj.Path)).
 			Valid(true).
-			Arg(proj.Path).
+			Arg("-project", "--", proj.Path).
 			UID(proj.Path).
 			IsFile(true).
 			Icon(icon).
-			Var("action", "-project").
-			Var("close", "true")
+			Var("hide_alfred", "true")
 
 		if len(proj.Folders) > 0 {
 			sub := "Open Project Folder"
@@ -323,17 +332,103 @@ func runSearch() {
 			it.NewModifier("cmd").
 				Subtitle(sub).
 				Icon(&aw.Icon{Value: "public.folder", Type: "filetype"}).
-				Var("action", "-folder")
+				Arg("-folder", proj.Path)
 		}
 	}
 
 	if opts.Query != "" {
 		res := wf.Filter(opts.Query)
 		for _, r := range res {
-			log.Printf("[search] %0.2f %#v", r.Score, r.SortKey)
+			log.Printf("[search] %6.2f %#v", r.Score, r.SortKey)
 		}
+		addNavigationItems(opts.Query, "search")
 	}
 
 	wf.WarnEmpty("No Projects Found", "Try a different query?")
 	wf.SendFeedback()
+}
+
+func addNavigationItems(query string, ignore ...string) {
+	if len(query) < 3 {
+		return
+	}
+	var (
+		items = []struct {
+			keywords []string
+			trigger  string
+			title    string
+			subtitle string
+			arg      []string
+			note     string
+			icon     *aw.Icon
+		}{
+			{
+				[]string{"reload", "rescan"},
+				"rescan",
+				"Rescan Projects",
+				"Rescan disk & update cached list of projects",
+				[]string{"-rescan", "-force"},
+				"Reloading project list …",
+				iconReload,
+			},
+			{
+				[]string{"config", "prefs", "settings"},
+				"config",
+				"Workflow Settings",
+				"Access workflow's preferences",
+				nil,
+				"",
+				iconSettings,
+			},
+			{
+				[]string{"search", "projects", ".st"},
+				"search",
+				"Search Projects",
+				"Search scanned projects",
+				nil,
+				"",
+				aw.IconWorkflow,
+			},
+		}
+	)
+
+	query = strings.ToLower(query)
+	for _, conf := range items {
+		if sliceContains(ignore, conf.trigger) {
+			continue
+		}
+		for _, kw := range conf.keywords {
+			if strings.HasPrefix(strings.ToLower(kw), query) {
+				it := wf.NewItem(conf.title).
+					Subtitle(conf.subtitle).
+					Icon(conf.icon).
+					UID("navigation-action."+conf.trigger).
+					Valid(true).
+					Var("trigger", conf.trigger).
+					Var("query", "")
+
+				if conf.trigger == "rescan" {
+					it.Var("trigger", "search")
+				}
+
+				if conf.arg != nil {
+					it.Arg(conf.arg...)
+				}
+
+				if conf.note != "" {
+					it.Var("notification", conf.note)
+				}
+				break
+			}
+		}
+	}
+}
+
+func sliceContains(sl []string, s string) bool {
+	for _, v := range sl {
+		if v == s {
+			return true
+		}
+	}
+	return false
 }

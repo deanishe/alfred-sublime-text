@@ -73,30 +73,17 @@ func run() {
 
 	if opts.Config {
 		runConfig()
-		return
-	}
-
-	if opts.Rescan {
+	} else if opts.Rescan {
 		runScan()
-		return
-	}
-
-	if opts.Open {
+	} else if opts.Open {
 		runOpen()
-		return
-	}
-
-	if opts.OpenFolder {
+	} else if opts.OpenFolder {
 		runOpenFolder()
-		return
-	}
-
-	if opts.OpenProject {
+	} else if opts.OpenProject {
 		runOpenProject()
-		return
+	} else if opts.Search {
+		runSearch()
 	}
-
-	runSearch()
 }
 
 // wrap run() in AwGo to catch and display panics

@@ -20,19 +20,12 @@ import (
 // var Default = Build
 
 const (
-	green = "03ae03"
-	// blue  = "5484f3"
-	// red    = "b00000"
-	// yellow = "f8ac30"
-)
-
-const (
 	buildDir = "./build"
 	distDir  = "./dist"
 )
 
 var (
-	info     *build.Info
+	info    *build.Info
 	workDir string
 )
 
@@ -61,10 +54,10 @@ var Aliases = map[string]interface{}{
 
 // make workflow in build directory
 func Build() error {
-	mg.Deps(cleanBuild, Icons)
+	mg.Deps(cleanBuild)
 	fmt.Println("building ...")
 
-	if err := sh.RunWith(info.Env(), "go", "build", "-o", "./build/alfsubl", "."); err != nil {
+	if err := sh.RunWith(info.Env(), "go", "build", "-o", "./build/alfred-sublime", "."); err != nil {
 		return err
 	}
 
@@ -90,7 +83,7 @@ func Run() error {
 	}
 	defer os.Chdir(workDir)
 
-	return sh.RunWith(info.Env(), "./alfsubl", "-h")
+	return sh.RunWith(info.Env(), "./alfred-sublime", "-h")
 }
 
 // create an .alfredworkflow file in ./dist
@@ -127,33 +120,6 @@ func Link() error {
 	return build.Symlink(target, src, true)
 }
 
-// generate icons
-func Icons() error {
-
-	copies := []struct {
-		src, dest, colour string
-	}{
-		{"docs.png", "help.png", green},
-	}
-
-	for i, cfg := range copies {
-
-		src := filepath.Join("icons", cfg.src)
-		dest := filepath.Join("icons", cfg.dest)
-
-		if exists(dest) {
-			fmt.Printf("[%d/%d] skipped existing: %s\n", i+1, len(copies), dest)
-			continue
-		}
-
-		if err := copyImage(src, dest, cfg.colour); err != nil {
-			return err
-		}
-	}
-
-	return rotateIcon("./icons/loading.png", []int{15, 30})
-}
-
 // download dependencies
 func Deps() error {
 	mg.Deps(cleanDeps)
@@ -161,7 +127,7 @@ func Deps() error {
 	return mod("download")
 }
 
-func cleanDeps() error {  return mod("tidy", "-v") }
+func cleanDeps() error { return mod("tidy", "-v") }
 
 // remove build files
 func Clean() { mg.Deps(cleanBuild, cleanMage) }

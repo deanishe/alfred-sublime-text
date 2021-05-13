@@ -2,14 +2,14 @@
 Sublime Text Projects Alfred Workflow
 =====================================
 
-View, filter and open your Sublime Text 3 (or VSCode) project files.
+View, filter and open your Sublime Text (or VSCode) project files.
 
 ![][demo]
 
 <!-- MarkdownTOC autolink="true" autoanchor="true" -->
 
 - [Download & Installation](#download--installation)
-    - [Catalina](#catalina)
+    - [Catalina and later](#catalina-and-later)
 - [Usage](#usage)
 - [How it works](#how-it-works)
 - [Configuration](#configuration)
@@ -25,10 +25,10 @@ Download & Installation
 Download the workflow from [GitHub][gh-releases] and install by double-clicking the `Sublime-Text-Projects-X.X.X.alfredworkflow` file.
 
 
-<a id="catalina"></a>
-### Catalina ###
+<a id="catalina-and-later"></a>
+### Catalina and later ###
 
-If you're running Catalina (macOS 10.15), you'll need to [grant the workflow executable permission to run][catalina].
+If you're running Catalina or later (macOS 10.15+), you'll need to [grant the workflow executable permission to run][catalina].
 
 
 <a id="usage"></a>
@@ -38,13 +38,16 @@ Usage
 - `.st [<query>]` — List/filter your `.sublime-project` files
 	+ `↩` — Open result in Sublime Text
 	+ `⌘+↩` — Reveal file in Finder
-- `.stconfig` — Show the current settings
+- `.st rescan` — Reload cached list of projects
+- `.st config` — Show the current settings
     - `Workflow Is Up To Date` / `Workflow Update Available` — Install update or check for update
     - `Edit Config File` — Open workflow's config file in Sublime Text
     - `View Help File` — Open README in your browser
     - `Report Issue` — Open GitHub issue tracker in your browser
     - `Visit Forum Thread` — Open workflow's thread on [alfredforum.com][forum]
     - `Rescan Projects` — Reload list of projects
+
+You can enter the words `search` or `config` as a search query anywhere to jump to that screen.
 
 
 <a id="how-it-works"></a>
