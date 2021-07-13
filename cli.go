@@ -262,7 +262,6 @@ func runOpen() {
 
 	var args []string
 	args = append(args, opts.Query)
-
 	cmd := exec.Command("open", args...)
 	if _, err := util.RunCmd(cmd); err != nil {
 		wf.Fatalf("open %q: %v", opts.Query, err)
@@ -281,7 +280,7 @@ func runSearch() {
 		log.Printf(`searching for "%s" ...`, opts.Query)
 	}
 
-	// Run "alfsubl rescan" in background if need be
+	// Run "alfred-sublime -rescan" in background if need be
 	if sm.ScanDue() && !wf.IsRunning("rescan") {
 		log.Println("rescanning for projects ...")
 		cmd := exec.Command(os.Args[0], "-rescan")
