@@ -405,7 +405,7 @@ func cacheProjects(key string, in <-chan string) <-chan string {
 			out <- p
 		}
 
-		sort.Sort(sort.StringSlice(projs))
+		sort.Strings(sort.StringSlice(projs))
 		data := []byte(strings.Join(projs, "\n"))
 		if err := wf.Cache.Store(key, data); err != nil {
 			log.Printf("[cache] error storing %s: %v", key, err)
