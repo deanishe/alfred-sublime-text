@@ -222,7 +222,7 @@ func runConfig() {
 		Icon(iconReload).
 		// Var("hide_alfred", "false").
 		Var("notification", "Reloading project list…").
-		Var("trigger", "config")
+		Var("trigger", conf.BackToTrigger)
 
 	if opts.Query != "" {
 		wf.Filter(opts.Query)

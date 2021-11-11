@@ -32,6 +32,9 @@ const (
 	// DefaultLocateInterval is how often to run locate
 	DefaultLocateInterval = 24 * time.Hour
 
+	// DefaultBackToTrigger is what trigger is called after a rescan
+	DefaultBackToTrigger = "config"
+
 	defaultConfig = `# How many directories deep to search by default.
 # 0 = the directory itself
 # 1 = immediate children of the directory
@@ -83,6 +86,7 @@ func init() {
 		FindInterval:   DefaultFindInterval,
 		MDFindInterval: DefaultMDFindInterval,
 		LocateInterval: DefaultLocateInterval,
+		BackToTrigger:  DefaultBackToTrigger,
 	}
 }
 
@@ -92,6 +96,7 @@ type config struct {
 	MDFindInterval time.Duration `toml:"-"`
 	LocateInterval time.Duration `toml:"-"`
 	VSCode         bool          `toml:"-" env:"VSCODE"`
+	BackToTrigger  string        `toml:"-"`
 
 	// From config file
 	Excludes    []string      `toml:"excludes"`
@@ -139,6 +144,11 @@ func loadConfig(path string) (*config, error) {
 	if conf.Depth == 0 {
 		conf.Depth = DefaultDepth
 	}
+
+	if conf.BackToTrigger != "config" && conf.BackToTrigger != "search" {
+		conf.BackToTrigger = "config"
+	}
+
 	for _, sp := range conf.SearchPaths {
 		if sp.Depth == 0 {
 			sp.Depth = conf.Depth
