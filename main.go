@@ -77,12 +77,12 @@ func run() {
 		runScan()
 	} else if opts.Open {
 		runOpen()
-	} else if opts.OpenFolder {
-		runOpenFolder()
-	} else if opts.OpenProject {
-		runOpenProject()
+	} else if opts.OpenFolders {
+		runOpenFolders()
 	} else if opts.Search {
 		runSearch()
+	} else {
+		runOpenPaths()
 	}
 }
 

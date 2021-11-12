@@ -63,6 +63,7 @@ func Build() error {
 
 	// files to include in workflow
 	globs := build.Globs(
+		"*.js",
 		"*.png",
 		"info.plist",
 		"*.html",

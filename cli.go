@@ -14,6 +14,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -48,8 +49,7 @@ type options struct {
 	Config      bool
 	Ignore      bool
 	Open        bool
-	OpenProject bool
-	OpenFolder  bool
+	OpenFolders bool
 	Rescan      bool
 
 	// Options
@@ -63,8 +63,7 @@ func init() {
 	cli.BoolVar(&opts.Search, "search", false, "search projects")
 	cli.BoolVar(&opts.Config, "conf", false, "show/filter configuration")
 	cli.BoolVar(&opts.Open, "open", false, "open specified file in default app")
-	cli.BoolVar(&opts.OpenProject, "project", false, "open specified project")
-	cli.BoolVar(&opts.OpenFolder, "folder", false, "open specified project")
+	cli.BoolVar(&opts.OpenFolders, "folders", false, "open specified project")
 	cli.BoolVar(&opts.Rescan, "rescan", false, "re-scan for projects")
 	cli.BoolVar(&opts.Force, "force", false, "force rescan")
 	cli.Usage = func() {
@@ -73,11 +72,12 @@ func init() {
 Alfred workflow to show Sublime Text/VSCode projects.
 
 Usage:
+    alfred-sublime <file>...
+    alfred-sublime -
     alfred-sublime -search [<query>]
     alfred-sublime -conf [<query>]
     alfred-sublime -open <path>
-    alfred-sublime -project <project file>
-    alfred-sublime -folder <project file>
+    alfred-sublime -folders <project file>
     alfred-sublime -rescan [-force]
     alfred-sublime -h|-help
 
@@ -88,7 +88,9 @@ Options:
 	}
 }
 
-func commandForProject(path string) *exec.Cmd {
+func openCommand(path string) *exec.Cmd {
+	// name, args := appArgs()
+	// return exec.Command(name, append(args, path)...)
 	var (
 		app   = "Sublime Text"
 		progs = sublPaths
@@ -107,47 +109,75 @@ func commandForProject(path string) *exec.Cmd {
 	return exec.Command("/usr/bin/open", "-a", app, path)
 }
 
-// Open a project file. CLI programs `subl` or `code` are preferred.
-// If they can't be found application "Sublime Text.app" or
-// "Visual Studio Code.app" is called instead.
-func runOpenProject() {
+// Try to open each command-line argument in turn.
+// If argument is a directory, search it for a project file.
+func runOpenPaths() {
 	wf.Configure(aw.TextErrors(true))
 
-	log.Printf("opening project %q ...", opts.Query)
-	cmd := commandForProject(opts.Query)
+	for _, path := range cli.Args() {
+		cmd := openCommand(findProject(path))
+		if path == "-" {
+			cmd.Stdin = os.Stdin
+		}
 
-	if _, err := util.RunCmd(cmd); err != nil {
-		wf.Fatalf("exec command %#v: %v", cmd, err)
+		log.Printf("opening %q ...", path)
+		if _, err := util.RunCmd(cmd); err != nil {
+			log.Printf("error opening %q: %v", path, err)
+		}
 	}
 }
 
+func findProject(dir string) string {
+	fi, err := os.Stat(dir)
+	if err != nil {
+		log.Printf("error inspecting file %q: %v", dir, err)
+		return dir
+	}
+	if !fi.IsDir() {
+		return dir
+	}
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		log.Printf("error reading directory %q: %v", dir, err)
+		return dir
+	}
+	for _, de := range files {
+		if de.IsDir() {
+			continue
+		}
+		if strings.ToLower(filepath.Ext(de.Name())) == fileExtension {
+			return filepath.Join(dir, de.Name())
+		}
+	}
+	return dir
+}
+
 // Open a project's folders
-func runOpenFolder() {
+func runOpenFolders() {
 	wf.Configure(aw.TextErrors(true))
 
 	var (
-		projs []Project
 		sm    = NewScanManager(conf)
+		projs []Project
 		err   error
 	)
-
 	if projs, err = sm.Load(); err != nil {
 		wf.Fatalf("load projects: %v", err)
 	}
 
 	for _, proj := range projs {
-		if proj.Path == opts.Query {
-			for _, path := range proj.Folders {
-
-				log.Printf("opening folder %q ...", path)
-				cmd := exec.Command("/usr/bin/open", path)
-
-				if _, err := util.RunCmd(cmd); err != nil {
-					wf.Fatalf("run command %#v: %v", cmd, err)
-				}
-			}
-			return
+		if proj.Path != opts.Query {
+			continue
 		}
+
+		for _, path := range proj.Folders {
+			log.Printf("opening folder %q ...", path)
+			cmd := exec.Command("/usr/bin/open", path)
+			if _, err := util.RunCmd(cmd); err != nil {
+				log.Printf("error opening folder %q: %v", path, err)
+			}
+		}
+		return
 	}
 
 	wf.Fatalf("no folders found for project %q", opts.Query)
@@ -313,7 +343,9 @@ func runSearch() {
 		it := wf.NewItem(proj.Name()).
 			Subtitle(util.PrettyPath(proj.Path)).
 			Valid(true).
-			Arg("-project", "--", proj.Path).
+			// Arg("-project", "--", proj.Path).
+			Arg(proj.Path).
+			IsFile(true).
 			UID(proj.Path).
 			Copytext(proj.Folder()).
 			Action(proj.Folder()).
@@ -327,8 +359,8 @@ func runSearch() {
 			}
 			it.NewModifier("cmd").
 				Subtitle(sub).
-				Icon(&aw.Icon{Value: "public.folder", Type: "filetype"}).
-				Arg("-folder", proj.Path)
+				Icon(&aw.Icon{Value: proj.Folder(), Type: "fileicon"}).
+				Arg("-folders", proj.Path)
 		}
 	}
 
