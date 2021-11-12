@@ -802,9 +802,10 @@ variables={allvars}
 				<integer>0</integer>
 				<key>relatedApps</key>
 				<array>
-					<string>com.apple.finder</string>
+					<string>com.runningwithcrayons.Alfred-Preferences</string>
 					<string>com.cocoatech.PathFinder</string>
 					<string>com.sublimetext.4</string>
+					<string>com.apple.finder</string>
 				</array>
 				<key>relatedAppsMode</key>
 				<integer>2</integer>
