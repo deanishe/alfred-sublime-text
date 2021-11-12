@@ -88,10 +88,11 @@ func init() {
 
 type config struct {
 	// From workflow environment variables
-	FindInterval   time.Duration `toml:"-"`
-	MDFindInterval time.Duration `toml:"-"`
-	LocateInterval time.Duration `toml:"-"`
-	VSCode         bool          `toml:"-" env:"VSCODE"`
+	FindInterval      time.Duration `toml:"-"`
+	MDFindInterval    time.Duration `toml:"-"`
+	LocateInterval    time.Duration `toml:"-"`
+	VSCode            bool          `toml:"-" env:"VSCODE"`
+	ActionProjectFile bool          `toml:"-" env:"ACTION_PROJECT_FILE"`
 
 	// From config file
 	Excludes    []string      `toml:"excludes"`

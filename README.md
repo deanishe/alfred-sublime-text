@@ -51,7 +51,9 @@ There is one keyword, `.st`, which works as follows:
 - `.st config` — Show the current settings
     - `Workflow Is Up To Date` / `Workflow Update Available` — Install update or check for update
     - `Rescan Projects` — Reload list of projects
-    - `Edit Config File` — Open workflow's config file in Sublime Text
+    - `Edit Config File` — Open workflow's configuration file
+    - `Editor: Sublime Text` / `Editor: VS Code` — Which editor is selected
+    - `Action Project File` — Whether copying/actioning a search result should use the path of the project file instead of that of the first project directory
     - `View Help File` — Open README in your browser
     - `Report Issue` — Open GitHub issue tracker in your browser
     - `Visit Forum Thread` — Open workflow's thread on [alfredforum.com][forum]
@@ -105,14 +107,16 @@ Configuration
 
 Scan intervals are configured in the [workflow's configuration sheet in Alfred Preferences][confsheet]:
 
-|      Variable     |                           Usage                           |
-|-------------------|-----------------------------------------------------------|
-| `INTERVAL_FIND`   | How long to cache `find` search results for               |
-| `INTERVAL_LOCATE` | How long to cache `locate` search results for             |
-| `INTERVAL_MDFIND` | How long to cache `mdfind` search results for             |
-| `VSCODE`          | Set to `1` or `true` to switch to Visual Studio Code mode |
+|        Variable       |   Type   |                          Usage                           |
+|-----------------------|----------|----------------------------------------------------------|
+| `INTERVAL_FIND`       | `duration` | How long to cache `find` search results for              |
+| `INTERVAL_LOCATE`     | `duration` | How long to cache `locate` search results for            |
+| `INTERVAL_MDFIND`     | `duration` | How long to cache `mdfind` search results for            |
+| `ACTION_PROJECT_FILE` | `boolean`  | Copying/actioning a search result uses project file path |
+| `VSCODE`              | `boolean`  | Switch to Visual Studio Code mode                        |
 
-The interval values should be of the form `10m` or `2h`. Set to `0` to disable a particular scanner.
+`duration` values should be of the form `10m` or `2h`. Set to `0` to disable a particular scanner.
+`boolean` values should be of the form `true` and `false` or `1` and `0`.
 
 The workflow should work "out of the box", but if you have project files in directories that `mdfind` doesn't see (hidden directories, network shares), you may have to explicitly add some search paths to the `sublime.toml` configuration file in the workflow's data directory. The file is created on first run, and you can use `.st config > Workflow Settings > Edit Config File` to open it.
 

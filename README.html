@@ -723,7 +723,9 @@ html,body,#wrapper{font-size:10pt!important}
 <ul>
 <li><code>Workflow Is Up To Date</code> / <code>Workflow Update Available</code> — Install update or check for update</li>
 <li><code>Rescan Projects</code> — Reload list of projects</li>
-<li><code>Edit Config File</code> — Open workflow&rsquo;s config file in Sublime Text</li>
+<li><code>Edit Config File</code> — Open workflow&rsquo;s configuration file</li>
+<li><code>Editor: Sublime Text</code> / <code>Editor: VS Code</code> — Which editor is selected</li>
+<li><code>Action Project File</code> — Whether copying/actioning a search result should use the path of the project file instead of that of the first project directory</li>
 <li><code>View Help File</code> — Open README in your browser</li>
 <li><code>Report Issue</code> — Open GitHub issue tracker in your browser</li>
 <li><code>Visit Forum Thread</code> — Open workflow&rsquo;s thread on <a href="https://www.alfredforum.com">alfredforum.com</a></li>
@@ -803,32 +805,43 @@ html,body,#wrapper{font-size:10pt!important}
 <table>
 <thead>
 <tr>
-<th>      Variable     </th>
-<th>                           Usage                           </th>
+<th>        Variable       </th>
+<th>   Type   </th>
+<th>                          Usage                           </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td> <code>INTERVAL_FIND</code>   </td>
-<td> How long to cache <code>find</code> search results for               </td>
+<td> <code>INTERVAL_FIND</code>       </td>
+<td> <code>duration</code> </td>
+<td> How long to cache <code>find</code> search results for              </td>
 </tr>
 <tr>
-<td> <code>INTERVAL_LOCATE</code> </td>
-<td> How long to cache <code>locate</code> search results for             </td>
+<td> <code>INTERVAL_LOCATE</code>     </td>
+<td> <code>duration</code> </td>
+<td> How long to cache <code>locate</code> search results for            </td>
 </tr>
 <tr>
-<td> <code>INTERVAL_MDFIND</code> </td>
-<td> How long to cache <code>mdfind</code> search results for             </td>
+<td> <code>INTERVAL_MDFIND</code>     </td>
+<td> <code>duration</code> </td>
+<td> How long to cache <code>mdfind</code> search results for            </td>
 </tr>
 <tr>
-<td> <code>VSCODE</code>          </td>
-<td> Set to <code>1</code> or <code>true</code> to switch to Visual Studio Code mode </td>
+<td> <code>ACTION_PROJECT_FILE</code> </td>
+<td> <code>boolean</code>  </td>
+<td> Copying/actioning a search result uses project file path </td>
+</tr>
+<tr>
+<td> <code>VSCODE</code>              </td>
+<td> <code>boolean</code>  </td>
+<td> Switch to Visual Studio Code mode                        </td>
 </tr>
 </tbody>
 </table>
 
 
-<p>The interval values should be of the form <code>10m</code> or <code>2h</code>. Set to <code>0</code> to disable a particular scanner.</p>
+<p><code>duration</code> values should be of the form <code>10m</code> or <code>2h</code>. Set to <code>0</code> to disable a particular scanner.
+<code>boolean</code> values should be of the form <code>true</code> and <code>false</code> or <code>1</code> and <code>0</code>.</p>
 
 <p>The workflow should work &ldquo;out of the box&rdquo;, but if you have project files in directories that <code>mdfind</code> doesn&rsquo;t see (hidden directories, network shares), you may have to explicitly add some search paths to the <code>sublime.toml</code> configuration file in the workflow&rsquo;s data directory. The file is created on first run, and you can use <code>.st config &gt; Workflow Settings &gt; Edit Config File</code> to open it.</p>
 

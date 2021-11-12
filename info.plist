@@ -803,6 +803,7 @@ variables={allvars}
 				<key>relatedApps</key>
 				<array>
 					<string>com.apple.finder</string>
+					<string>com.sublimetext.4</string>
 					<string>com.cocoatech.PathFinder</string>
 				</array>
 				<key>relatedAppsMode</key>
@@ -844,6 +845,8 @@ It primarily uses `mdfind` and `locate` (if enabled) to search your system. Ther
 You can disable a specific scanner by setting its INTERVAL_* setting to 0.
 
 Set VSCODE to 1 (or true) to find VSCode projects instead of Sublime ones.
+
+By default, copying or calling Universal Actions on a search result uses the first project directory. Set ACTION_PROJECT_FILE to 1 (or true) to pass the path of the project file instead.
 
 To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</string>
 	<key>uidata</key>
@@ -929,7 +932,7 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 		<key>56EDA9A1-C8C3-4549-B3C3-6AA5DE031A82</key>
 		<dict>
 			<key>xpos</key>
-			<integer>1070</integer>
+			<integer>1065</integer>
 			<key>ypos</key>
 			<integer>570</integer>
 		</dict>
@@ -1027,6 +1030,8 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 	</dict>
 	<key>variables</key>
 	<dict>
+		<key>ACTION_PROJECT_FILE</key>
+		<string>false</string>
 		<key>INTERVAL_FIND</key>
 		<string>30m</string>
 		<key>INTERVAL_LOCATE</key>
@@ -1036,6 +1041,11 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 		<key>VSCODE</key>
 		<string>false</string>
 	</dict>
+	<key>variablesdontexport</key>
+	<array>
+		<string>ACTION_PROJECT_FILE</string>
+		<string>VSCODE</string>
+	</array>
 	<key>version</key>
 	<string>3.3.0</string>
 	<key>webaddress</key>

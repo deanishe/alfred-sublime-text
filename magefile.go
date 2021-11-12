@@ -25,8 +25,10 @@ const (
 )
 
 var (
-	info    *build.Info
-	workDir string
+	info       *build.Info
+	workDir    string
+	archs      = []string{"amd64", "arm64"}
+	codeSignID = os.Getenv("CODESIGN_ID")
 )
 
 func init() {
@@ -57,8 +59,28 @@ func Build() error {
 	mg.Deps(cleanBuild)
 	fmt.Println("building ...")
 
-	if err := sh.RunWith(info.Env(), "go", "build", "-o", "./build/alfred-sublime", "."); err != nil {
+	var bins []string
+	for _, arch := range archs {
+		env := info.Env()
+		env["GOOS"] = "darwin"
+		env["GOARCH"] = arch
+		bin := fmt.Sprintf("%s/alfred-sublime.%s", buildDir, arch)
+		bins = append(bins, bin)
+		if err := sh.RunWith(env, "go", "build", "-o", bin, "."); err != nil {
+			return err
+		}
+	}
+
+	// build fat binary
+	args := []string{"-create", "-output", filepath.Join(buildDir, "alfred-sublime")}
+	if err := sh.Run("/usr/bin/lipo", append(args, bins...)...); err != nil {
 		return err
+	}
+	// delete arch-specific binaries
+	for _, bin := range bins {
+		if err := sh.Rm(bin); err != nil {
+			return err
+		}
 	}
 
 	// files to include in workflow
@@ -87,9 +109,17 @@ func Run() error {
 	return sh.RunWith(info.Env(), "./alfred-sublime", "-h")
 }
 
+func codeSign() error {
+	if codeSignID == "" {
+		fmt.Println("skipping signing: CODESIGN_ID unset")
+		return nil
+	}
+	return sh.Run("codesign", "-f", "-s", codeSignID, "-i", info.BundleID, filepath.Join(buildDir, "alfred-sublime"))
+}
+
 // create an .alfredworkflow file in ./dist
 func Dist() error {
-	mg.SerialDeps(Clean, Build)
+	mg.SerialDeps(Clean, Build, codeSign)
 	p, err := build.Export(buildDir, distDir)
 	if err != nil {
 		return err

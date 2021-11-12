@@ -51,6 +51,7 @@ type options struct {
 	Open        bool
 	OpenFolders bool
 	Rescan      bool
+	SetConfig   string
 
 	// Options
 	Force bool
@@ -66,6 +67,7 @@ func init() {
 	cli.BoolVar(&opts.OpenFolders, "folders", false, "open specified project")
 	cli.BoolVar(&opts.Rescan, "rescan", false, "re-scan for projects")
 	cli.BoolVar(&opts.Force, "force", false, "force rescan")
+	cli.StringVar(&opts.SetConfig, "set", "", "set a configuration value")
 	cli.Usage = func() {
 		fmt.Fprint(os.Stderr, `usage: alfred-sublime [options] [arguments]
 
@@ -79,6 +81,7 @@ Usage:
     alfred-sublime -open <path>
     alfred-sublime -folders <project file>
     alfred-sublime -rescan [-force]
+    alfred-sublime -set <key> <value>
     alfred-sublime -h|-help
 
 Options:
@@ -228,6 +231,34 @@ func runConfig() {
 		Icon(iconSettings).
 		Var("hide_alfred", "true")
 
+	v := "true"
+	editor := "Sublime Text"
+	other := "VS Code"
+	icon := iconSublime
+	if conf.VSCode {
+		v = "false"
+		icon = iconVSCode
+		editor, other = other, editor
+	}
+	wf.NewItem("Editor: "+editor).
+		Subtitle("↩ to switch to "+other).
+		Valid(true).
+		Arg("-set", "VSCODE", v).
+		Icon(icon).
+		Var("notification", "Using "+other)
+
+	v = "true"
+	icon = iconOff
+	if conf.ActionProjectFile {
+		v = "false"
+		icon = iconOn
+	}
+	wf.NewItem("Action Project File").
+		Subtitle("Action path of project file instead of first project directory").
+		Valid(true).
+		Arg("-set", "ACTION_PROJECT_FILE", v).
+		Icon(icon)
+
 	wf.NewItem("View Help File").
 		Subtitle("Open workflow help in your browser").
 		Arg("-open", "README.html").
@@ -296,6 +327,23 @@ func runOpen() {
 	}
 }
 
+// Save a config value and re-open settings view.
+func runSetConfig() {
+	wf.Configure(aw.TextErrors(true))
+
+	var (
+		key   = opts.SetConfig
+		value = opts.Query
+	)
+	if err := wf.Config.Set(key, value, false).Do(); err != nil {
+		wf.Fatalf("set config %q to %q: %v", key, value, err)
+	}
+	log.Printf("set %q to %q", key, value)
+	if err := wf.Alfred.RunTrigger("config", ""); err != nil {
+		wf.Fatalf("run trigger config: %v", err)
+	}
+}
+
 // Filter Sublime projects in Alfred
 func runSearch() {
 	var (
@@ -340,15 +388,19 @@ func runSearch() {
 	}
 
 	for _, proj := range projs {
+		path := proj.Folder()
+		if conf.ActionProjectFile {
+			path = proj.Path
+		}
 		it := wf.NewItem(proj.Name()).
-			Subtitle(util.PrettyPath(proj.Path)).
+			Subtitle(util.PrettyPath(path)).
 			Valid(true).
 			// Arg("-project", "--", proj.Path).
 			Arg(proj.Path).
 			IsFile(true).
 			UID(proj.Path).
-			Copytext(proj.Folder()).
-			Action(proj.Folder()).
+			Copytext(path).
+			Action(path).
 			Icon(icon).
 			Var("hide_alfred", "true")
 

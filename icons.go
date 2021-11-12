@@ -16,6 +16,8 @@ var (
 	iconHelp            = &aw.Icon{Value: "icons/help.png"}
 	iconIssue           = &aw.Icon{Value: "icons/issue.png"}
 	iconReload          = &aw.Icon{Value: "icons/reload.png"}
+	iconOn              = &aw.Icon{Value: "icons/toggle-on.png"}
+	iconOff             = &aw.Icon{Value: "icons/toggle-off.png"}
 	iconSettings        = &aw.Icon{Value: "icons/settings.png"}
 	iconSublime         = &aw.Icon{Value: "icons/sublime.png"}
 	iconUpdateAvailable = &aw.Icon{Value: "icons/update-available.png"}

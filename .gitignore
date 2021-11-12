@@ -1,4 +1,4 @@
-
+/.autoenv*.zsh
 # build and dist directories
 /build
 /dist

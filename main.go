@@ -71,7 +71,9 @@ func run() {
 		fileExtension = ".code-workspace"
 	}
 
-	if opts.Config {
+	if opts.SetConfig != "" {
+		runSetConfig()
+	} else if opts.Config {
 		runConfig()
 	} else if opts.Rescan {
 		runScan()
