@@ -23,7 +23,7 @@ import (
 
 var (
 	opts = &options{}
-	cli  = flag.NewFlagSet("alfsubl", flag.ContinueOnError)
+	cli  = flag.NewFlagSet("alfred-sublime", flag.ContinueOnError)
 
 	// Candidate paths to `subl` command-line program. We'll open projects
 	// via `subl` because it correctly loads the workspace. Opening a
@@ -155,7 +155,6 @@ func runOpenFolder() {
 
 // Filter configuration in Alfred
 func runConfig() {
-
 	// prevent Alfred from re-ordering results
 	if opts.Query == "" {
 		wf.Configure(aw.SuppressUIDs(true))
@@ -180,6 +179,16 @@ func runConfig() {
 			Autocomplete("workflow:update").
 			Icon(iconUpdateOK)
 	}
+
+	wf.NewItem("Rescan Projects").
+		Subtitle("Rebuild cached list of projects").
+		Arg("-rescan", "-force").
+		Valid(true).
+		UID("rescan").
+		Icon(iconReload).
+		// Var("hide_alfred", "false").
+		Var("notification", "Reloading project list…").
+		Var("trigger", "config")
 
 	wf.NewItem("Edit Config File").
 		Subtitle("Edit directories to scan").
@@ -210,19 +219,8 @@ func runConfig() {
 		Arg("-open", forumThreadURL).
 		UID("forum").
 		Valid(true).
-		Icon(iconURL).
+		Icon(iconForum).
 		Var("hide_alfred", "true")
-
-	// TODO: add "back to" setting for rescan command
-	wf.NewItem("Rescan Projects").
-		Subtitle("Rebuild cached list of projects").
-		Arg("-rescan", "-force").
-		Valid(true).
-		UID("rescan").
-		Icon(iconReload).
-		// Var("hide_alfred", "false").
-		Var("notification", "Reloading project list…").
-		Var("trigger", conf.BackToTrigger)
 
 	if opts.Query != "" {
 		wf.Filter(opts.Query)
@@ -296,10 +294,9 @@ func runSearch() {
 	}
 
 	if len(projs) == 0 && wf.IsRunning("rescan") {
-
 		wf.Rerun(0.1)
 		wf.NewItem("Scanning projects…").
-			Subtitle("Results will refresh in a few seconds").
+			Subtitle("Results will be available shortly").
 			Valid(false).
 			Icon(iconSpinner())
 
@@ -313,13 +310,13 @@ func runSearch() {
 	}
 
 	for _, proj := range projs {
-
 		it := wf.NewItem(proj.Name()).
 			Subtitle(util.PrettyPath(proj.Path)).
 			Valid(true).
 			Arg("-project", "--", proj.Path).
 			UID(proj.Path).
-			IsFile(true).
+			Copytext(proj.Folder()).
+			Action(proj.Folder()).
 			Icon(icon).
 			Var("hide_alfred", "true")
 
@@ -347,10 +344,11 @@ func runSearch() {
 	wf.SendFeedback()
 }
 
-func addNavigationItems(query string, ignore ...string) {
+func addNavigationItems(query, backTo string, ignore ...string) {
 	if len(query) < 3 {
 		return
 	}
+	ignore = append(ignore, backTo)
 	var (
 		items = []struct {
 			keywords []string
@@ -363,6 +361,9 @@ func addNavigationItems(query string, ignore ...string) {
 		}{
 			{
 				[]string{"reload", "rescan"},
+				// Trigger doesn't exist, but we can't put the
+				// real trigger (backTo) here yet because it's
+				// the current action, which we want to filter out
 				"rescan",
 				"Rescan Projects",
 				"Rescan disk & update cached list of projects",
@@ -397,28 +398,30 @@ func addNavigationItems(query string, ignore ...string) {
 			continue
 		}
 		for _, kw := range conf.keywords {
-			if strings.HasPrefix(strings.ToLower(kw), query) {
-				it := wf.NewItem(conf.title).
-					Subtitle(conf.subtitle).
-					Icon(conf.icon).
-					UID("navigation-action."+conf.trigger).
-					Valid(true).
-					Var("trigger", conf.trigger).
-					Var("query", "")
-
-				if conf.trigger == "rescan" {
-					it.Var("trigger", "search")
-				}
-
-				if conf.arg != nil {
-					it.Arg(conf.arg...)
-				}
-
-				if conf.note != "" {
-					it.Var("notification", conf.note)
-				}
-				break
+			if !strings.HasPrefix(strings.ToLower(kw), query) {
+				continue
 			}
+			it := wf.NewItem(conf.title).
+				Subtitle(conf.subtitle).
+				Icon(conf.icon).
+				UID("navigation-action."+conf.trigger).
+				Valid(true).
+				Var("trigger", conf.trigger).
+				Var("query", "")
+
+			// override non-existent "rescan" trigger
+			if conf.trigger == "rescan" {
+				it.Var("trigger", backTo)
+			}
+
+			if conf.arg != nil {
+				it.Arg(conf.arg...)
+			}
+
+			if conf.note != "" {
+				it.Var("notification", conf.note)
+			}
+			break
 		}
 	}
 }

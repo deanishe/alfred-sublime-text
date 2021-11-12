@@ -11,21 +11,18 @@ import (
 
 // Workflow icons
 var (
+	iconError           = &aw.Icon{Value: "icons/error.png"}
+	iconForum           = &aw.Icon{Value: "icons/forum.png"}
 	iconHelp            = &aw.Icon{Value: "icons/help.png"}
 	iconIssue           = &aw.Icon{Value: "icons/issue.png"}
 	iconReload          = &aw.Icon{Value: "icons/reload.png"}
 	iconSettings        = &aw.Icon{Value: "icons/settings.png"}
-	iconURL             = &aw.Icon{Value: "icons/url.png"}
+	iconSublime         = &aw.Icon{Value: "icons/sublime.png"}
 	iconUpdateAvailable = &aw.Icon{Value: "icons/update-available.png"}
 	iconUpdateOK        = &aw.Icon{Value: "icons/update-ok.png"}
-	iconWarning         = &aw.Icon{Value: "icons/warning.png"}
-	iconSublime         = &aw.Icon{Value: "icons/sublime.png"}
 	iconVSCode          = &aw.Icon{Value: "icons/vscode.png"}
-	// iconDocs            = &aw.Icon{Value: "icons/docs.png"}
-	// iconOff             = &aw.Icon{Value: "icons/off.png"}
-	// iconOn              = &aw.Icon{Value: "icons/on.png"}
-	// iconTrash           = &aw.Icon{Value: "icons/trash.png"}
-	spinnerIcons = []*aw.Icon{
+	iconWarning         = &aw.Icon{Value: "icons/warning.png"}
+	spinnerIcons        = []*aw.Icon{
 		{Value: "icons/spinner-1.png"},
 		{Value: "icons/spinner-2.png"},
 		{Value: "icons/spinner-3.png"},
@@ -33,6 +30,7 @@ var (
 )
 
 func init() {
+	aw.IconError = iconError
 	aw.IconWarning = iconWarning
 }
 

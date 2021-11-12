@@ -41,11 +41,11 @@ Usage
 - `.st rescan` — Reload cached list of projects
 - `.st config` — Show the current settings
     - `Workflow Is Up To Date` / `Workflow Update Available` — Install update or check for update
+    - `Rescan Projects` — Reload list of projects
     - `Edit Config File` — Open workflow's config file in Sublime Text
     - `View Help File` — Open README in your browser
     - `Report Issue` — Open GitHub issue tracker in your browser
     - `Visit Forum Thread` — Open workflow's thread on [alfredforum.com][forum]
-    - `Rescan Projects` — Reload list of projects
 
 You can enter the words `search` or `config` as a search query anywhere to jump to that screen.
 

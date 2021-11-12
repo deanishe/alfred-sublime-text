@@ -34,7 +34,6 @@ var (
 )
 
 func withTestFile(data []byte, fn func(path string)) error {
-
 	f, err := ioutil.TempFile("", "alfred-sublime-")
 	if err != nil {
 		return err
@@ -51,7 +50,6 @@ func withTestFile(data []byte, fn func(path string)) error {
 }
 
 func TestParseProject(t *testing.T) {
-
 	err := withTestFile([]byte(testProjJS), func(path string) {
 
 		dir := filepath.Dir(path)
@@ -76,6 +74,10 @@ func TestParseProject(t *testing.T) {
 			if s != paths[i] {
 				t.Errorf("Bad Folder. Expected=%v, Got=%v", paths[i], s)
 			}
+		}
+
+		if s := proj.Folder(); s != paths[0] {
+			t.Errorf("Bad Folder. Expected=%v, Got=%v", paths[0], s)
 		}
 
 	})
@@ -125,9 +127,7 @@ func TestProjectNames(t *testing.T) {
 	}
 
 	for _, td := range paths {
-
 		proj := Project{Path: td.in}
-
 		if proj.Name() != td.out {
 			t.Errorf("Bad Name. Expected=%v, Got=%v", td.out, proj.Name())
 		}
