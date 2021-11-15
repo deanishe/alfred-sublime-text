@@ -140,11 +140,17 @@ func loadConfig(path string) (*config, error) {
 	if conf.Depth == 0 {
 		conf.Depth = DefaultDepth
 	}
+	for i, s := range conf.Excludes {
+		conf.Excludes[i] = expandPath(s)
+	}
 	for _, sp := range conf.SearchPaths {
 		if sp.Depth == 0 {
 			sp.Depth = conf.Depth
 		}
 		sp.Path = expandPath(sp.Path)
+		for i, s := range sp.Excludes {
+			sp.Excludes[i] = expandPath(s)
+		}
 	}
 
 	return conf, nil

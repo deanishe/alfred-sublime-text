@@ -581,7 +581,7 @@ fi</string>
 /------------- ACTION IN -------------\
 query={query}
 variables={allvars}
-\------------- ACTION OUT ------------/</string>
+\------------- ACTION IN -------------/</string>
 				<key>cleardebuggertext</key>
 				<false/>
 				<key>processoutputs</key>
@@ -802,9 +802,9 @@ variables={allvars}
 				<integer>0</integer>
 				<key>relatedApps</key>
 				<array>
-					<string>com.runningwithcrayons.Alfred-Preferences</string>
-					<string>com.cocoatech.PathFinder</string>
 					<string>com.sublimetext.4</string>
+					<string>com.cocoatech.PathFinder</string>
+					<string>com.runningwithcrayons.Alfred-Preferences</string>
 					<string>com.apple.finder</string>
 				</array>
 				<key>relatedAppsMode</key>
@@ -1048,7 +1048,7 @@ To add additional directories to scan, use `.stconfig &gt; Edit Config File`.</s
 		<string>VSCODE</string>
 	</array>
 	<key>version</key>
-	<string>3.3.0-beta</string>
+	<string>3.3.0-beta2</string>
 	<key>webaddress</key>
 	<string>https://github.com/deanishe/alfred-sublime-text</string>
 </dict>

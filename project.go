@@ -9,13 +9,14 @@
 package main
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
 
 	// Supports comments in JSON, which is required to read
 	// Sublime Text or VS Code project files.
-	json "github.com/yosuke-furukawa/json5/encoding/json5"
+	"github.com/tidwall/jsonc"
 )
 
 // Project is a Sublime Text or VS Code project.
@@ -70,7 +71,7 @@ func NewProject(path string) (Project, error) {
 		return proj, err
 	}
 
-	if err = json.Unmarshal(data, &raw); err == nil {
+	if err = json.Unmarshal(jsonc.ToJSON(data), &raw); err == nil {
 		proj.Folders = []string{}
 		for _, f := range raw.Folders {
 			if p := resolvePath(dir, f.Path); p != "" {

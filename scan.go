@@ -339,7 +339,7 @@ func filterExcludes(in <-chan string, patterns []string) <-chan string {
 	return filterMatches(in, func(r string) bool {
 		for _, g := range globs {
 			if g.Match(r) {
-				log.Printf("[filter] ignored (%s): %s", g, util.PrettyPath(r))
+				log.Printf("[filter] ignored (%v): %s", g, util.PrettyPath(r))
 				return true
 			}
 		}
