@@ -37,7 +37,7 @@ var (
 	// Candidate paths to `code` command-line program.
 	codePaths = []string{
 		"/usr/local/bin/code",
-		"/Applications/VSCodium.app/Contents/Resources/app/bin/code",
+		"/Applications/VSCodium.app/Contents/Resources/app/bin/codium",
 		"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code",
 	}
 )
